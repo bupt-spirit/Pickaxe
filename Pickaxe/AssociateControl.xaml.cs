@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Pickaxe.Tabs
+namespace Pickaxe
 {
     /// <summary>
-    /// Interaction logic for ClusterControl.xaml
+    /// Interaction logic for AssociateControl.xaml
     /// </summary>
-    public partial class ClusterControl : UserControl
+    public partial class AssociateControl : UserControl
     {
-        public ClusterControl()
+        public AssociateControl()
         {
             InitializeComponent();
         }

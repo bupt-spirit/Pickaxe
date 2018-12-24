@@ -10,19 +10,23 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Pickaxe.Tabs
+namespace Pickaxe
 {
     /// <summary>
-    /// Interaction logic for Preprocess.xaml
+    /// Interaction logic for OptionDialog.xaml
     /// </summary>
-    public partial class PreprocessControl : UserControl
+    public partial class OptionDialog : Window
     {
-        public PreprocessControl()
+        private string Description { get; set; }
+
+        public OptionDialog(string title, string description)
         {
             InitializeComponent();
+            this.DataContext = this;
+            this.Title = title;
+            this.Description = description;
         }
     }
 }

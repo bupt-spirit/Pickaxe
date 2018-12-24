@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Pickaxe.Tabs
+namespace Pickaxe
 {
     /// <summary>
-    /// Interaction logic for AssociateControl.xaml
+    /// Interaction logic for Visualize.xaml
     /// </summary>
-    public partial class AssociateControl : UserControl
+    public partial class VisualizeControl : UserControl
     {
-        public AssociateControl()
+        public VisualizeControl()
         {
             InitializeComponent();
         }

@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
-using static System.Linq.Enumerable;
 
 namespace PickaxeCore.Relation
 {
@@ -75,6 +75,9 @@ namespace PickaxeCore.Relation
             private List<string> nominalLabels;
             private Dictionary<string, int> nominalValueIndex;
             public int Count { get => nominalLabels.Count; }
+            public IEnumerable<Value> Values {
+                get => Enumerable.Range(0, Count).Select(Value.ToValue);
+            }
 
             public override bool ValidateValue(Value value)
             {
@@ -131,7 +134,7 @@ namespace PickaxeCore.Relation
 
             private void RemoveMapValue(int removedIndex, IList<Value> values)
             {
-                foreach (var i in Range(0, values.Count))
+                for (var i = 0; i < values.Count; ++i)
                 {
                     var current = values[i];
                     var removed = Value.ToValue(removedIndex);

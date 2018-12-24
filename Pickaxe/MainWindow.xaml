@@ -4,15 +4,14 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Pickaxe"
-        xmlns:tabs="clr-namespace:Pickaxe.Tabs"
         mc:Ignorable="d"
-        Title="Pickaxe" Height="450" Width="800" Loaded="Window_Loaded">
+        Title="Pickaxe" Height="450" Width="800">
     <TabControl>
-        <TabItem x:Name="dataSetTab" Header="Data Set" />
-        <TabItem Header="Preprocess" />
-        <TabItem Header="Classify" />
-        <TabItem Header="Cluster" />
-        <TabItem Header="Associate" />
-        <TabItem Header="Visualize" />
+        <TabItem x:Name="tabItemDataSet" Header="Data Set" />
+        <TabItem x:Name="tabItemPreprocess" Header="Preprocess" />
+        <TabItem x:Name="tabItemClassify" Header="Classify" />
+        <TabItem x:Name="tabItemCluster" Header="Cluster" />
+        <TabItem x:Name="tabItemAssociate" Header="Associate" />
+        <TabItem x:Name="tabItemVisualize" Header="Visualize" />
     </TabControl>
 </Window>

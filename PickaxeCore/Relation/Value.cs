@@ -50,5 +50,18 @@ namespace PickaxeCore.Relation
         {
             return float.IsNaN(this.inner);
         }
+
+        public static Value Parse(string s)
+        {
+            float f;
+            if (Single.TryParse(s, out f))
+            {
+                return Value.ToValue(f);
+            }
+            else
+            {
+                return Value.MISSING;
+            }
+        }
     }
 }

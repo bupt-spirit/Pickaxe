@@ -2,9 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Diagnostics;
-using static System.Linq.Enumerable;
 
 namespace PickaxeCore.Relation
 {
@@ -39,6 +38,8 @@ namespace PickaxeCore.Relation
                         throw new ArgumentException("tuple count is not same");
                 }
             }
+            this.TupleViews = new ObservableCollection<TupleView>();
+            this.BuildTupleViews();
         }
 
         public List<RelationAttribute> Attributes { get; private set; }
@@ -56,7 +57,7 @@ namespace PickaxeCore.Relation
                 }
                 else
                 {
-                    return this.Attributes.First().Data.Count;
+                    return this.Attributes[0].Data.Count;
                 }
             }
             set
@@ -67,22 +68,69 @@ namespace PickaxeCore.Relation
                 }
             }
         }
+        public ObservableCollection<TupleView> TupleViews { get; private set; }
 
-        public void AddAttribute(string name, AttributeType attributeType, List<Value> data)
+        private void BuildTupleViews()
         {
-            Trace.Assert(this.TupleCount == data.Count);
-            this.Attributes.Add(new RelationAttribute(name, attributeType, data));
+            this.TupleViews.Clear();
+            for (int i = 0; i < this.TupleCount; ++i)
+            {
+                this.TupleViews.Add(new TupleView(this, i));
+            }
         }
 
-        public void AddAttribute(string name, AttributeType attributeType)
+        public RelationAttribute AllMissingAttribute(string name, AttributeType type)
         {
-            this.Attributes.Add(new RelationAttribute(name, attributeType, new List<Value>()));
-            this.Attributes.Last().Data.Resize(this.TupleCount, Value.MISSING);
+            var data = new List<Value>();
+            data.Resize(this.TupleCount, Value.MISSING);
+            return new RelationAttribute(name, type, data);
+        }
+
+        public void AddAttribute(RelationAttribute attribute)
+        {
+            if (this.TupleCount == 0)
+            {
+                this.Attributes.Add(attribute);
+                this.BuildTupleViews();
+                return;
+            }
+            Trace.Assert(this.TupleCount == attribute.Data.Count);
+            var attributeIndex = this.Attributes.Count;
+            this.Attributes.Add(attribute);
+            foreach (var tupleView in this.TupleViews)
+            {
+                tupleView.FirePropertyChangedEvent(attributeIndex);
+            }
+        }
+
+        public void InsertAttribute(int attributeIndex, RelationAttribute attribute)
+        {
+            if (this.TupleCount == 0)
+            {
+                if (attributeIndex != 0)
+                {
+                    throw new ArgumentException();
+                }
+                this.Attributes.Add(attribute);
+                this.BuildTupleViews();
+                return;
+            }
+            Trace.Assert(this.TupleCount == attribute.Data.Count);
+            this.Attributes.Insert(attributeIndex, attribute);
+            foreach (var tupleView in this.TupleViews)
+            {
+                for (var i = attributeIndex; i < this.AttributeCount; ++i)
+                    tupleView.FirePropertyChangedEvent(i);
+            }
         }
 
         public void RemoveAttribute(int attributeIndex)
         {
             this.Attributes.RemoveAt(attributeIndex);
+            foreach (var tupleView in this.TupleViews)
+            {
+                tupleView.FirePropertyChangedEvent(attributeIndex);
+            }
         }
 
         public Value this[int attributeIndex, int tupleIndex]
@@ -94,25 +142,16 @@ namespace PickaxeCore.Relation
                     throw new ArgumentException(
                         $"invalid value {value} for attribute {this.Attributes[attributeIndex].Type}");
                 this.Attributes[attributeIndex].Data[tupleIndex] = value;
+                this.TupleViews[tupleIndex].FirePropertyChangedEvent(attributeIndex);
             }
-        }
-
-        public List<Value> Tuple(int tupleIndex)
-        {
-            return new List<Value>(
-                Range(0, this.AttributeCount).Select((attributeIndex) => this[attributeIndex, tupleIndex])
-                );
-        }
-
-        public IEnumerable<List<Value>> Tuples()
-        {
-            return Range(0, this.TupleCount).Select((tupleIndex) => this.Tuple(tupleIndex));
         }
 
         public void AddTuple(IEnumerable<Value> vs)
         {
             var tupleIndex = this.TupleCount;
             this.TupleCount += 1; // this extends all list
+            var tupleView = new TupleView(this, tupleIndex);
+            this.TupleViews.Add(tupleView);
 
             void cleanUp()
             {
@@ -123,7 +162,7 @@ namespace PickaxeCore.Relation
             }
 
             var e = vs.GetEnumerator();
-            foreach (var attributeIndex in Range(0, this.AttributeCount))
+            for (var attributeIndex = 0; attributeIndex < this.AttributeCount; ++attributeIndex)
             {
                 if (e.MoveNext())
                 {
@@ -148,7 +187,10 @@ namespace PickaxeCore.Relation
 
         public void AddTuple()
         {
-            this.TupleCount += 1;
+            var tupleIndex = this.TupleCount;
+            this.TupleCount += 1; // this extends all list
+            var tupleView = new TupleView(this, tupleIndex);
+            this.TupleViews.Add(tupleView);
         }
 
         public void InsertTuple(int index, IEnumerable<Value> vs)
@@ -161,7 +203,7 @@ namespace PickaxeCore.Relation
             }
 
             var e = vs.GetEnumerator();
-            foreach (var i in Range(0, this.AttributeCount))
+            for (var i = 0; i < this.AttributeCount; ++i)
             {
                 if (e.MoveNext())
                 {
@@ -169,45 +211,111 @@ namespace PickaxeCore.Relation
                 }
                 else
                 {
-                    foreach (var j in Range(0, i))
+                    for (var j = 0; j < i; ++j)
                         this.Attributes[j].Data.RemoveAt(index);
                     throwException();
                 }
             }
             if (e.MoveNext())
             {
-                foreach (var i in Range(0, this.AttributeCount))
+                for (var i = 0; i < this.AttributeCount; ++i)
                 {
                     this.Attributes[i].Data.RemoveAt(index);
                 }
                 throwException();
             }
+            this.TupleViews.Insert(index, new TupleView(this, index));
+            for (var i = index + 1; i < this.TupleCount; ++i)
+            {
+                this.TupleViews[i].SetTupleIndexWithoutEvent(i);
+            }
         }
 
         public void InsertTuple(int index)
         {
-            foreach (var i in Range(0, this.AttributeCount))
+            for (var i = 0; i < this.AttributeCount; ++i)
             {
                 this.Attributes[i].Data.Insert(index, Value.MISSING);
+            }
+            this.TupleViews.Insert(index, new TupleView(this, index));
+            for (var i = index + 1; i < this.TupleCount; ++i)
+            {
+                this.TupleViews[i].SetTupleIndexWithoutEvent(i);
+            }
+        }
+
+        public void RemoveTupleAt(int index)
+        {
+            for (var i = 0; i < this.AttributeCount; ++i)
+            {
+                this.Attributes[i].Data.RemoveAt(index);
+            }
+            this.TupleViews.RemoveAt(index);
+            for (var i = index; i < this.TupleCount; ++i)
+            {
+                this.TupleViews[i].SetTupleIndexWithoutEvent(i);
             }
         }
     }
 
-    //public class Tuple : ObservableCollection<Value>
-    //{
-    //    public Relation Relation { get; private set; }
-    //    public int Index { get; set; }
+    public class TupleView : INotifyPropertyChanged
+    {
+        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
-    //    public Tuple(Relation relation, int index)
-    //    {
-    //        this.Relation = relation;
-    //        this.Index = index;
-    //        this.CollectionChanged += OnCollectionChanged;
-    //    }
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void FirePropertyChangedEvent(int index)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs($"Values[{index}]"));
+        }
 
-    //    private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-    //    {
-    //        e.Action
-    //    }
-    //}
+        public TupleView(Relation relation, int tupleIndex)
+        {
+            this.Relation = relation;
+            this.TupleIndex = tupleIndex;
+        }
+
+        private int tupleIndex;
+
+        public int TupleIndex
+        {
+            get
+            {
+                return this.tupleIndex;
+            }
+            set
+            {
+                if (this.tupleIndex != value)
+                {
+                    this.tupleIndex = value;
+                    for (var i = 0; i < this.Relation.AttributeCount; ++i)
+                    {
+                        this.FirePropertyChangedEvent(i);
+                    }
+                }
+            }
+        }
+        public Relation Relation { get; private set; }
+
+        public Value this[int attributeIndex]
+        {
+            get
+            {
+                if (attributeIndex < this.Relation.AttributeCount && this.TupleIndex < this.Relation.TupleCount)
+                    return this.Relation[attributeIndex, this.TupleIndex];
+                else
+                    logger.Debug("accessing missing value at ({0}, {1})", attributeIndex, this.TupleIndex);
+                return Value.MISSING;
+            }
+            set
+            {
+                this.Relation[attributeIndex, this.TupleIndex] = value;
+                FirePropertyChangedEvent(attributeIndex);
+            }
+        }
+
+        public void SetTupleIndexWithoutEvent(int index)
+        {
+            this.tupleIndex = index;
+        }
+    }
 }

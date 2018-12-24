@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Pickaxe.Tabs
+namespace Pickaxe
 {
     /// <summary>
     /// Interaction logic for ClassifyControl.xaml

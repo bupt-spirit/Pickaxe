@@ -13,9 +13,9 @@ namespace PickaxeCore.Relation.Tests
             var relation = new Relation();
             Assert.AreEqual(relation.AttributeCount, 0);
             Assert.AreEqual(relation.TupleCount, 0);
-            relation.AddAttribute("a1", new AttributeType.Numeric());
+            relation.AddAttribute(relation.AllMissingAttribute("a1", new AttributeType.Numeric()));
             Assert.AreEqual(relation.AttributeCount, 1);
-            relation.AddAttribute("a2", new AttributeType.Nominal(new string[] { "n1", "n2" }));
+            relation.AddAttribute(relation.AllMissingAttribute("a2", new AttributeType.Nominal(new string[] { "n1", "n2" })));
             Assert.ThrowsException<ArgumentException>(() =>
             {
                 relation.AddTuple(new Value[] { 1.11f, 2f });
