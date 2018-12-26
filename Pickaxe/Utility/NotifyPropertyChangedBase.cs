@@ -4,8 +4,10 @@ using System.Diagnostics;
 
 namespace Pickaxe.Utility
 {
+    [Serializable]
     public class NotifyPropertyChangedBase : INotifyPropertyChanged
     {
+        [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)
         {

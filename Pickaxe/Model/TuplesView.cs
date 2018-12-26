@@ -19,7 +19,8 @@ namespace Pickaxe.Model
             if (relation.Count != 0)
             {
                 for (var i = 0; i < this.relation[0].Data.Count; ++i)
-                    Add(new TupleView(this.relation, i));
+                    // call base InsertItem to bypass override
+                    base.InsertItem(i, new TupleView(relation, i));
             }
         }
 
@@ -36,7 +37,9 @@ namespace Pickaxe.Model
 
         protected override void InsertItem(int index, TupleView item)
         {
-            if (!item.IsDetached()) throw new ArgumentException("not detached tuple view");
+            if (!item.IsDetached()) {
+                throw new ArgumentException("not detached tuple view");
+            }
             foreach (var attribute in relation)
                 attribute.Data.Insert(index, Value.MISSING);
             base.InsertItem(index, new TupleView(relation, index));

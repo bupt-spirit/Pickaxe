@@ -16,6 +16,7 @@ namespace Pickaxe.Model
     {
         #region Fields
 
+        [NonSerialized]
         private TuplesView _tuplesView;
 
         #endregion
