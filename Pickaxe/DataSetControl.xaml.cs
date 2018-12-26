@@ -1,14 +1,14 @@
-﻿using Pickaxe.Utility.Converter;
-using PickaxeCore.Relation;
+﻿using Pickaxe.Model;
+using Pickaxe.Utility.Converter;
 using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using System.Windows.Input;
+using System.IO;
 
 namespace Pickaxe
 {
@@ -17,11 +17,13 @@ namespace Pickaxe
     /// </summary>
     public partial class DataSetControl : UserControl
     {
-        public Relation Relation { get; set; }
+        private Relation Relation { get; set; }
+        private string FileName { get; set; }
 
         public DataSetControl(Relation relation)
         {
             this.Relation = relation;
+            this.FileName = null;
             InitializeComponent();
         }
 
@@ -37,7 +39,8 @@ namespace Pickaxe
             this.dataGrid.DataContext = this.Relation.TupleViews;
         }
 
-        private void InsertColumn(int attributeIndex, RelationAttribute attribute) {
+        private void InsertColumn(int attributeIndex, RelationAttribute attribute)
+        {
             DataGridColumn column;
             if (attribute.Type is AttributeType.Binary)
             {
@@ -318,6 +321,59 @@ namespace Pickaxe
             else
             {
                 throw new NotImplementedException();
+            }
+        }
+
+        private void NewButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.dataGrid.Columns.Clear();
+            this.Relation.Clear();
+        }
+
+        private void OpenButton_Click(object sender, RoutedEventArgs e)
+        {
+            var openFileDialog = new Microsoft.Win32.OpenFileDialog();
+            if (openFileDialog.ShowDialog() == true)
+            {
+                this.FileName = openFileDialog.FileName;
+                using (var fileStream = new FileStream(this.FileName, FileMode.Open, FileAccess.Read))
+                {
+                    this.Relation.ReadFromStream(fileStream);
+                    this.InitializeRelationBinding();
+                }
+            }
+        }
+
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.FileName == null)
+            {
+                var saveFileDialog = new Microsoft.Win32.SaveFileDialog();
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    this.FileName = saveFileDialog.FileName;
+                }
+                else
+                {
+                    return;
+                }
+            }
+            using (var fileStream = new FileStream(this.FileName, FileMode.Create, FileAccess.Write))
+            {
+                this.Relation.SaveToStream(fileStream);
+            }
+        }
+
+        private void SaveAsButton_Click(object sender, RoutedEventArgs e)
+        {
+            var saveFileDialog = new Microsoft.Win32.SaveFileDialog();
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                this.FileName = saveFileDialog.FileName;
+                using (var fileStream = new FileStream(this.FileName, FileMode.Create, FileAccess.Write))
+                {
+                    this.Relation.SaveToStream(fileStream);
+                }
             }
         }
 

@@ -4,10 +4,53 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Pickaxe"
+        xmlns:model="clr-namespace:Pickaxe.Model"
+        xmlns:view="clr-namespace:Pickaxe.View"
+        xmlns:viewmodel="clr-namespace:Pickaxe.ViewModel"
+        xmlns:converter="clr-namespace:Pickaxe.Utility.Converter"
         mc:Ignorable="d"
         Title="Pickaxe" Height="450" Width="800">
+    <Window.DataContext>
+        <viewmodel:MainWindowViewModel />
+    </Window.DataContext>
+    <Window.Resources>
+        <converter:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+    </Window.Resources>
     <TabControl>
-        <TabItem x:Name="tabItemDataSet" Header="Data Set" />
+        <TabItem x:Name="tabItemDataSet" Header="Data Set">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+
+                <!--  Data set loading control -->
+                <WrapPanel Grid.Row="0" Grid.Column="0">
+                    <Label VerticalAlignment="Center" Content="{Binding FileName}"
+                           Visibility="{Binding FileName, Converter={StaticResource NullToVisibilityConverter}}" />
+                    <Button VerticalAlignment="Center" Content="New" Command="{Binding NewRelation}" />
+                    <Button VerticalAlignment="Center" Content="Open" />
+                    <Button VerticalAlignment="Center" Content="Save" />
+                    <Button VerticalAlignment="Center" Content="Save As" />
+                </WrapPanel>
+                <view:RelationEditGrid Grid.Row="1" Grid.Column="0"
+                                       Relation="{Binding DataContext.Relation, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" />
+                <WrapPanel Grid.Row="2" Grid.Column="0">
+                    <StackPanel Orientation="Horizontal">
+                        <Label VerticalAlignment="Center" Content="Attribute Count:" />
+                        <TextBlock VerticalAlignment="Center" Text="{Binding Relation.Count}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Label VerticalAlignment="Center" Content="Tuple Count:" />
+                        <TextBlock VerticalAlignment="Center" Text="{Binding Relation.TuplesView.Count}" />
+                    </StackPanel>
+                </WrapPanel>
+            </Grid>
+        </TabItem>
         <TabItem x:Name="tabItemPreprocess" Header="Preprocess" />
         <TabItem x:Name="tabItemClassify" Header="Classify" />
         <TabItem x:Name="tabItemCluster" Header="Cluster" />

@@ -4,9 +4,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace PickaxeCore.Relation
 {
+    [Serializable]
     public class RelationAttribute
     {
         public AttributeType Type { get; set; }
@@ -19,8 +22,13 @@ namespace PickaxeCore.Relation
             Type = type;
             Data = data;
         }
+
+        public RelationAttribute()
+        {
+        }
     }
 
+    [Serializable]
     public class Relation
     {
         public Relation() : this(new List<RelationAttribute>())
@@ -39,7 +47,7 @@ namespace PickaxeCore.Relation
                 }
             }
             this.TupleViews = new ObservableCollection<TupleView>();
-            this.BuildTupleViews();
+            this.RebuildTupleViews();
         }
 
         public List<RelationAttribute> Attributes { get; private set; }
@@ -68,9 +76,10 @@ namespace PickaxeCore.Relation
                 }
             }
         }
+        [field: NonSerialized]
         public ObservableCollection<TupleView> TupleViews { get; private set; }
 
-        private void BuildTupleViews()
+        private void RebuildTupleViews()
         {
             this.TupleViews.Clear();
             for (int i = 0; i < this.TupleCount; ++i)
@@ -91,7 +100,7 @@ namespace PickaxeCore.Relation
             if (this.TupleCount == 0)
             {
                 this.Attributes.Add(attribute);
-                this.BuildTupleViews();
+                this.RebuildTupleViews();
                 return;
             }
             Trace.Assert(this.TupleCount == attribute.Data.Count);
@@ -112,7 +121,7 @@ namespace PickaxeCore.Relation
                     throw new ArgumentException();
                 }
                 this.Attributes.Add(attribute);
-                this.BuildTupleViews();
+                this.RebuildTupleViews();
                 return;
             }
             Trace.Assert(this.TupleCount == attribute.Data.Count);
@@ -255,6 +264,27 @@ namespace PickaxeCore.Relation
             {
                 this.TupleViews[i].SetTupleIndexWithoutEvent(i);
             }
+        }
+
+        public void Clear()
+        {
+            this.TupleViews.Clear();
+            this.Attributes.Clear();
+        }
+
+        public void ReadFromStream(Stream stream)
+        {
+            this.Clear();
+            var formatter = new BinaryFormatter();
+            var newRelation = (Relation)formatter.Deserialize(stream);
+            this.Attributes = newRelation.Attributes;
+            this.RebuildTupleViews();
+        }
+
+        public void SaveToStream(Stream stream)
+        {
+            var formatter = new BinaryFormatter();
+            formatter.Serialize(stream, this);
         }
     }
 

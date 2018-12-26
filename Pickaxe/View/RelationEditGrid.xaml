@@ -1,0 +1,86 @@
+﻿<UserControl x:Class="Pickaxe.View.RelationEditGrid"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Pickaxe.View"
+             xmlns:converter="clr-namespace:Pickaxe.Utility.Converter"
+             xmlns:viewmodel="clr-namespace:Pickaxe.ViewModel"
+             xmlns:model="clr-namespace:Pickaxe.Model"
+             xmlns:utility="clr-namespace:Pickaxe.Utility"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             Name="relationEditGrid">
+    <UserControl.DataContext>
+        <viewmodel:RelationEditGridViewModel />
+    </UserControl.DataContext>
+    
+    <UserControl.Resources>
+        <!-- View Model Proxy -->
+        <utility:BindingProxy x:Key="ViewModelProxy" Data="{Binding}" />
+
+        <converter:ValueIsMissingConverter x:Key="ValueIsMissingConverter" />
+        <converter:NominalValueStringConverter x:Key="NominalValueStringConverter" />
+        <converter:AttributeTypeStringConverter x:Key="AttributeTypeStringConverter" />
+
+        <SolidColorBrush x:Key="MissingValueForgroundBrush" Color="Brown" />
+        <Style x:Key="ComboBoxItemBackgroundStyle" TargetType="ComboBoxItem">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Converter={StaticResource ValueIsMissingConverter}}" Value="True">
+                    <Setter Property="Foreground" Value="{StaticResource MissingValueForgroundBrush}" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="DataGridCellEditingStyle" TargetType="FrameworkElement">
+            <EventSetter Event="MouseRightButtonDown" Handler="DataGridCell_PreviewMouseRightButtonDown" />
+        </Style>
+
+        <DataTemplate x:Key="ColumnHeaderTemplate" DataType="{x:Type model:RelationAttribute}">
+            <StackPanel Background="Transparent" Tag="{Binding DisplayIndex, RelativeSource={RelativeSource AncestorType=DataGridColumnHeader}}">
+                <TextBlock HorizontalAlignment="Center" Text="{Binding Tag, RelativeSource={RelativeSource AncestorType=StackPanel}}" />
+                <TextBlock HorizontalAlignment="Center" Text="{Binding Name}" />
+                <TextBlock HorizontalAlignment="Center" Text="{Binding Type, Converter={StaticResource AttributeTypeStringConverter}}" />
+                <StackPanel.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Add Attribute" Command="{Binding Data.AddAttribute,  Source={StaticResource ViewModelProxy}}" />
+                        <MenuItem Header="Insert Attribute"
+                                  Command="{Binding Data.InsertAttribute,  Source={StaticResource ViewModelProxy}}"
+                                  CommandParameter="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                        <MenuItem Header="Remove Attribute"
+                                  Command="{Binding Data.RemoveAttribute,  Source={StaticResource ViewModelProxy}}"
+                                  CommandParameter="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                    </ContextMenu>
+                </StackPanel.ContextMenu>
+            </StackPanel>
+        </DataTemplate>
+
+        <ContextMenu x:Key="DataGridContextMenu">
+            <MenuItem Header="Add Tuple" Command="{Binding AddTuple}" />
+            <MenuItem Header="Add Attribute" Command="{Binding AddAttribute}" />
+        </ContextMenu>
+        
+        <ContextMenu x:Key="DataGridCellContextMenu">
+            <MenuItem Header="Add Tuple" Command="{Binding Data.AddAttribute, Source={StaticResource ViewModelProxy}}" />
+            <MenuItem Header="Insert Tuple" Command="{Binding Data.InsertTuple, Source={StaticResource ViewModelProxy}}" />
+            <MenuItem Header="Remove Tuple" Command="{Binding Data.RemoveTuple, Source={StaticResource ViewModelProxy}}" />
+        </ContextMenu>
+    </UserControl.Resources>
+
+    <Grid>
+        <DataGrid  Grid.Row="0" Grid.Column="0"
+                   Name="dataGrid"
+                   ItemsSource="{Binding Relation.TuplesView}"
+                   AutoGenerateColumns="False"
+                   SelectionUnit="FullRow"
+                   SelectionMode="Extended"
+                   ContextMenu="{StaticResource DataGridContextMenu}"
+                   EnableColumnVirtualization="True"
+                   EnableRowVirtualization="True">
+            <DataGrid.RowHeaderTemplate>
+                <DataTemplate DataType="{x:Type model:TupleView}">
+                    <TextBlock Text="{Binding DataContext.TupleIndex, RelativeSource={RelativeSource AncestorType=DataGridRow}}" />
+                </DataTemplate>
+            </DataGrid.RowHeaderTemplate>
+        </DataGrid>
+    </Grid>
+</UserControl>

@@ -1,11 +1,7 @@
-﻿using PickaxeCore.Relation;
+﻿using Pickaxe.Model;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
+using System.Windows;
 using System.Windows.Data;
 
 namespace Pickaxe.Utility.Converter
@@ -23,6 +19,28 @@ namespace Pickaxe.Utility.Converter
         {
             if (value is Value inValue)
                 return AttributeType.ValueToString(inValue);
+            else
+                throw new ArgumentException("not a value");
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    class AttributeTypeStringConverter : IValueConverter
+    {
+        public static AttributeType.Numeric numericAttributeType = new AttributeType.Numeric();
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is AttributeType.Binary)
+                return "Binary";
+            else if (value is AttributeType.Nominal)
+                return "Nominal";
+            else if (value is AttributeType.Numeric)
+                return "Numeric";
             else
                 throw new ArgumentException("not a value");
         }
@@ -66,6 +84,26 @@ namespace Pickaxe.Utility.Converter
                 return inValue.IsMissing();
             else
                 throw new ArgumentException("not a value");
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    class NullToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is null)
+            {
+                return Visibility.Hidden;
+            }
+            else
+            {
+                return Visibility.Visible;
+            }
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

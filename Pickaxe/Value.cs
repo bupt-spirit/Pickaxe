@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace PickaxeCore.Relation
 {
+    [Serializable]
     public struct Value : IFormattable, IEquatable<Value>, IComparable<Value>
     {
         public static Value MISSING = (Value) float.NaN;

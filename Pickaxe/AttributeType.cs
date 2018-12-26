@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Xml.Serialization;
 
 namespace PickaxeCore.Relation
 {
     /// <summary>
     /// class AttributeType is the base of all types of attributes of PickaxeCore.
     /// </summary>
+    [Serializable]
+    [XmlInclude(typeof(Binary))]
+    [XmlInclude(typeof(Nominal))]
+    [XmlInclude(typeof(Numeric))]
     public abstract class AttributeType
     {
         // prevent other inherit
@@ -16,12 +21,14 @@ namespace PickaxeCore.Relation
         public bool ValidateValueWithMissing(Value value) => value.IsMissing() || this.ValidateValue(value);
         public abstract string ValueToString(Value value);
 
+        [Serializable]
         public class Numeric : AttributeType
         {
             public override bool ValidateValue(Value value) => !value.IsMissing();
             public override string ValueToString(Value value) => value.ToString();
         }
 
+        [Serializable]
         public class Binary : AttributeType
         {
             public override bool ValidateValue(Value value) {
@@ -56,6 +63,7 @@ namespace PickaxeCore.Relation
         }
 
         // Nominal contains name of every nominal
+        [Serializable]
         public class Nominal : AttributeType
         {
             public Nominal()
