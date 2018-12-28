@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.ObjectModel;
+using System.Collections;
 
 namespace Pickaxe.Model
 {
@@ -14,6 +15,17 @@ namespace Pickaxe.Model
 
         private Relation _relation;
         private int _tupleIndex;
+
+        [IndexerName("Item")]
+        public object this[int index]
+        {
+            get => Relation[index].Data[TupleIndex];
+            set
+            {
+                Relation[index].Data[TupleIndex] = (Value)value;
+                OnPropertyChanged("Item[]");
+            }
+        }
 
         #endregion
 
@@ -34,23 +46,21 @@ namespace Pickaxe.Model
             get => _tupleIndex;
             set
             {
+                if (value == -1)
+                {
+                    _tupleIndex = -1;
+                    return;
+                }
                 _tupleIndex = value;
                 OnPropertyChanged("TupleIndex");
-            }
-        }
-
-        [IndexerName("Item")]
-        public Value this[int index]
-        {
-            get => Relation[index].Data[TupleIndex];
-            set
-            {
-                Relation[index].Data[TupleIndex] = value;
                 OnPropertyChanged("Item[]");
             }
         }
 
+        public int Count => Relation.Count;
+
         #endregion
+
 
         #region Constructors
 
@@ -62,82 +72,35 @@ namespace Pickaxe.Model
 
         #endregion
 
-        #region Static functions
-
-        public static readonly TupleView Detached = new TupleView(null, -1);
-
-        #endregion
-
         #region Methods
 
-        public bool IsDetached() => this.Equals(Detached);
-
-        public void OnContentChanged()
+        public void SetTupleIndexWithoutUpdate(int index)
         {
+            this._tupleIndex = index;
+            OnPropertyChanged("TupleIndex");
+        }
+
+        public bool IsDetached()
+        {
+            return Relation == null && TupleIndex == -1;
+        }
+
+        public void OnContentChanged() {
             OnPropertyChanged("Item[]");
         }
 
         #endregion
+
+        #region Static menbers
+
+        public static TupleView _detached;
+        public static TupleView Detached
+        {
+            get => _detached ?? (
+                _detached = new TupleView(null, -1)
+                );
+        }
+
+        #endregion
     }
-
-    //public class TupleView : INotifyPropertyChanged
-    //{
-    //    private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-
-    //    public event PropertyChangedEventHandler PropertyChanged;
-    //    public void FirePropertyChangedEvent(int index)
-    //    {
-    //        this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs($"Values[{index}]"));
-    //    }
-
-    //    public TupleView(Relation relation, int tupleIndex)
-    //    {
-    //        this.Relation = relation;
-    //        this.TupleIndex = tupleIndex;
-    //    }
-
-    //    private int tupleIndex;
-
-    //    public int TupleIndex
-    //    {
-    //        get
-    //        {
-    //            return this.tupleIndex;
-    //        }
-    //        set
-    //        {
-    //            if (this.tupleIndex != value)
-    //            {
-    //                this.tupleIndex = value;
-    //                for (var i = 0; i < this.Relation.Attributes.Count; ++i)
-    //                {
-    //                    this.FirePropertyChangedEvent(i);
-    //                }
-    //            }
-    //        }
-    //    }
-    //    public Relation Relation { get; private set; }
-
-    //    public Value this[int attributeIndex]
-    //    {
-    //        get
-    //        {
-    //            if (attributeIndex < this.Relation.Attributes.Count && this.TupleIndex < this.Relation.TupleViews.Count)
-    //                return this.Relation[attributeIndex, this.TupleIndex];
-    //            else
-    //                logger.Debug("accessing missing value at ({0}, {1})", attributeIndex, this.TupleIndex);
-    //            return Value.MISSING;
-    //        }
-    //        set
-    //        {
-    //            this.Relation[attributeIndex, this.TupleIndex] = value;
-    //            FirePropertyChangedEvent(attributeIndex);
-    //        }
-    //    }
-
-    //    public void SetTupleIndexWithoutEvent(int index)
-    //    {
-    //        this.tupleIndex = index;
-    //    }
-    //}
 }

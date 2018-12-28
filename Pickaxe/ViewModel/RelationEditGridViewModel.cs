@@ -41,7 +41,7 @@ namespace Pickaxe.ViewModel
                     },
                     parameter =>
                     {
-                        var data = new BindingList<Value>();
+                        var data = new ObservableCollection<Value>();
                         data.Resize(Relation.TuplesView.Count, Value.MISSING);
                         Relation.Add(
                             new RelationAttribute("New Attribute", new AttributeType.Numeric(), data)
@@ -64,7 +64,7 @@ namespace Pickaxe.ViewModel
                     },
                     parameter =>
                     {
-                        var data = new BindingList<Value>();
+                        var data = new ObservableCollection<Value>();
                         data.Resize(Relation.TuplesView.Count, Value.MISSING);
                         Relation.Insert((int)parameter,
                             new RelationAttribute("New Attribute", new AttributeType.Numeric(), data)

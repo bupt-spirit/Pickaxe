@@ -79,7 +79,8 @@
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-        <DataGrid x:Name="dataGrid"
+        <DataGrid Grid.Row="0" Grid.Column="0"
+                  x:Name="dataGrid"
                   ItemsSource="{Binding Relation.TuplesView}"
                   AutoGenerateColumns="False"
                   SelectionUnit="FullRow"

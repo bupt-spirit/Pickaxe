@@ -1,6 +1,7 @@
 ﻿using Pickaxe.Utility;
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 
 namespace Pickaxe.Model
@@ -10,8 +11,10 @@ namespace Pickaxe.Model
     {
         private int _index;
         private AttributeType _type;
-        private BindingList<Value> _data;
+        private ObservableCollection<Value> _data;
         private string _name;
+
+        public event NotifyCollectionChangedEventHandler DataCollectionChanged;
 
         public AttributeType Type
         {
@@ -22,13 +25,14 @@ namespace Pickaxe.Model
                 OnPropertyChanged("Type");
             }
         }
-        public BindingList<Value> Data
+        public ObservableCollection<Value> Data
         {
             get => _data;
             set
             {
                 _data = value;
                 OnPropertyChanged("Data");
+                RebindInternalEvents();
             }
         }
         public string Name
@@ -50,11 +54,21 @@ namespace Pickaxe.Model
             }
         }
 
-        public RelationAttribute(string name, AttributeType type, BindingList<Value> data)
+        public RelationAttribute(string name, AttributeType type, ObservableCollection<Value> data)
         {
             Name = name;
             Type = type;
             Data = data;
+        }
+
+        public void RebindInternalEvents()
+        {
+            Data.CollectionChanged += Data_CollectionChanged;
+        }
+
+        private void Data_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            DataCollectionChanged?.Invoke(this, e);
         }
     }
 }
