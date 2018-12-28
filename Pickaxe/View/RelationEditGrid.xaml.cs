@@ -133,7 +133,7 @@ namespace Pickaxe.View
             Style style = new Style();
             style.Triggers.Add(ValueMissingForegroundTrigger(TextBlock.ForegroundProperty, attributeIndex));
             textBlockFactory.SetValue(TextBlock.StyleProperty, style);
-            textBlockFactory.SetValue(TextBlock.ContextMenuProperty, this.FindResource("DataGridCellContextMenu"));
+            //textBlockFactory.SetValue(TextBlock.ContextMenuProperty, this.FindResource("DataGridCellContextMenu"));
             template.VisualTree = textBlockFactory;
             return template;
         }

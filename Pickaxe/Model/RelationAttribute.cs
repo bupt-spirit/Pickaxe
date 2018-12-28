@@ -7,6 +7,7 @@ namespace Pickaxe.Model
     [Serializable]
     public class RelationAttribute : NotifyPropertyChangedBase
     {
+        private int _index;
         private AttributeType _type;
         private ObservableCollection<Value> _data;
         private string _name;
@@ -38,9 +39,14 @@ namespace Pickaxe.Model
                 OnPropertyChanged("Name");
             }
         }
-
-        public RelationAttribute()
+        public int Index
         {
+            get => _index;
+            set
+            {
+                _index = value;
+                OnPropertyChanged("Index");
+            }
         }
 
         public RelationAttribute(string name, AttributeType type, ObservableCollection<Value> data)

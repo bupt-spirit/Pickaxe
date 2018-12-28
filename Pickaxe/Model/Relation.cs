@@ -1,13 +1,7 @@
-﻿using Pickaxe.Utility;
-using Pickaxe.Utility.ListExtension;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Pickaxe.Model
 {
@@ -75,11 +69,20 @@ namespace Pickaxe.Model
 
         #endregion
 
+        private void Data_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            // TODO
+        }
+
         #region Overrides
 
         protected override void ClearItems()
         {
             base.ClearItems();
+            foreach (var tupleView in TuplesView)
+            {
+                tupleView.OnContentChanged();
+            }
         }
 
         protected override void InsertItem(int index, RelationAttribute item)
@@ -88,21 +91,46 @@ namespace Pickaxe.Model
             {
                 throw new ArgumentException("Invalid relation attributes");
             }
+            item.Index = index;
+            item.Data.CollectionChanged += Data_CollectionChanged;
+            foreach (var tupleView in TuplesView)
+            {
+                tupleView.OnContentChanged();
+            }
             base.InsertItem(index, item);
+            for (var i = index + 1; i < Count; ++i)
+            {
+                this[i].Index = i;
+            }
         }
 
         protected override void RemoveItem(int index)
         {
+            this[index].Data.CollectionChanged += Data_CollectionChanged;
             base.RemoveItem(index);
+            foreach (var tupleView in TuplesView)
+            {
+                tupleView.OnContentChanged();
+            }
+            for (var i = index; i < Count; ++i)
+            {
+                this[i].Index = i;
+            }
         }
 
         protected override void SetItem(int index, RelationAttribute item)
         {
+            item.Index = index;
+            item.Data.CollectionChanged += Data_CollectionChanged;
             if (item.Data.Count != TuplesView.Count)
             {
                 throw new ArgumentException("Invalid relation attributes");
             }
             base.SetItem(index, item);
+            foreach (var tupleView in TuplesView)
+            {
+                tupleView.OnContentChanged();
+            }
         }
 
         #endregion

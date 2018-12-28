@@ -49,11 +49,11 @@ namespace Pickaxe.Model
 
         protected override void RemoveItem(int index)
         {
+            foreach (var attribute in relation)
+                attribute.Data.RemoveAt(index);
             base.RemoveItem(index);
             for (var i = index; i < Count; ++i)
                 SetItem(i, TupleView.Detached);
-            foreach (var attribute in relation)
-                attribute.Data.RemoveAt(index);
         }
 
         protected override void SetItem(int index, TupleView item)
