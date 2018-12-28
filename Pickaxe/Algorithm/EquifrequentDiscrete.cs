@@ -29,9 +29,11 @@ namespace Pickaxe.Algorithm
             var temp = attribute.Data
                 .Zip(Enumerable.Range(0, originCount), (v, i) => new SaveIndex(v, i))
                 .Where(x => !x.v.IsMissing()).OrderBy((x) => x.v).ToList();
+            if (temp.Count == 0)
+                return;
             int binSize = (int)Math.Ceiling(((temp.Count - 1) / (double)binNumber));
             List<int> binCount = new List<int>();
-            binCount.Resize(binNumber, 0);
+            binCount.Resize(binNumber, 0);//用来跟踪每个箱子里已经有多少个数字了
             for (int k = 0; k < temp.Count; k++)
             {
                 int j = (int)Math.Floor(k / (double)binNumber);

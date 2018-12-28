@@ -31,6 +31,7 @@ namespace Pickaxe.ViewModel
         private ICommand _removeAttribute;
         private ICommand _equidistanceDiscreteAttribute;
         private ICommand _equifrequentDiscreteAttribute;
+        private ICommand _minMaxNormalizeAttribute;
 
         public int BinNumber
         {
@@ -299,6 +300,25 @@ namespace Pickaxe.ViewModel
                 );
         }
 
+        public ICommand MinMaxNormalizeAttribute
+        {
+            get => _minMaxNormalizeAttribute ?? (
+                _minMaxNormalizeAttribute = new RelayCommand(
+                    parameter =>
+                    {
+                        if (Relation == null)
+                            return false;
+                        if (parameter == null)
+                            return false;
+                        return parameter is RelationAttribute;
+                    },
+                    parameter =>
+                    {
+                        var attribute = parameter as RelationAttribute;
+                        MinMaxNormalize.Run(attribute);
+                    })
+                );
+        }
         #region Static members
 
         private static readonly string FILE_FILTER = "Pickaxe files (*.pickaxe)|*.pickaxe|All files (*.*)|*.*";

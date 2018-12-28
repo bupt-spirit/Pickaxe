@@ -85,7 +85,8 @@
                     <StackPanel Grid.Row="2" Grid.Column="0">
                         <TextBox Text="{Binding BinNumber}" />
                         <Button Content="Equidistance Discrete" Command="{Binding EquidistanceDiscreteAttribute}" CommandParameter="{Binding SelectedItem, ElementName=attributeDataGrid}" />
-                        <Button Content="Equifrequent Discrete" Command="{Binding EquifrequentDiscreteAttribute}" CommandParameter="{Binding SelectedItem, ElementName=attributeDataGrid}" />
+                        <Button Content="Equifrequent Discrete" Command="{Binding EquifrequentDiscreteAttribute}" CommandParameter="{Binding SelectedItem, ElementName=attributeDataGrid}"/>
+                        <Button Content="MinMax Normalize" Command="{Binding MinMaxNormalizeAttribute}" CommandParameter="{Binding SelectedItem, ElementName=attributeDataGrid}"/>
                     </StackPanel>
                 </Grid>
             </Grid>
