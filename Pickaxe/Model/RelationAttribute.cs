@@ -1,6 +1,7 @@
 ﻿using Pickaxe.Utility;
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace Pickaxe.Model
 {
@@ -9,7 +10,7 @@ namespace Pickaxe.Model
     {
         private int _index;
         private AttributeType _type;
-        private ObservableCollection<Value> _data;
+        private BindingList<Value> _data;
         private string _name;
 
         public AttributeType Type
@@ -21,7 +22,7 @@ namespace Pickaxe.Model
                 OnPropertyChanged("Type");
             }
         }
-        public ObservableCollection<Value> Data
+        public BindingList<Value> Data
         {
             get => _data;
             set
@@ -49,7 +50,7 @@ namespace Pickaxe.Model
             }
         }
 
-        public RelationAttribute(string name, AttributeType type, ObservableCollection<Value> data)
+        public RelationAttribute(string name, AttributeType type, BindingList<Value> data)
         {
             Name = name;
             Type = type;

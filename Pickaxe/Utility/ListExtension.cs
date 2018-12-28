@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 
 namespace Pickaxe.Utility.ListExtension
@@ -22,6 +23,25 @@ namespace Pickaxe.Utility.ListExtension
         }
 
         public static void Resize<T>(this ObservableCollection<T> list, int size, T element)
+        {
+            var count = list.Count;
+            if (size < count)
+            {
+                for (var i = count - 1; i >= size; --i)
+                {
+                    list.RemoveAt(i);
+                }
+            }
+            else if (size > count)
+            {
+                for (var i = count; i < size; ++i)
+                {
+                    list.Add(element);
+                }
+            }
+        }
+
+        public static void Resize<T>(this BindingList<T> list, int size, T element)
         {
             var count = list.Count;
             if (size < count)

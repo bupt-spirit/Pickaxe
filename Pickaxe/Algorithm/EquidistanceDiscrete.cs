@@ -30,7 +30,10 @@ namespace Pickaxe.Algorithm
             {
                 if (attribute.Data[i].IsMissing())
                     continue;
-                attribute.Data[i] = (float)Math.Floor((attribute.Data[i] - min) / binSize);
+                if (attribute.Data[i] == max)
+                    attribute.Data[i] = binNumber - 1; // if data[i] is max, use binNumber - 1
+                else 
+                    attribute.Data[i] = (float)Math.Floor((attribute.Data[i] - min) / binSize);
             }
         }
     }
