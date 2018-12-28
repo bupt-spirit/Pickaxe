@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 
 namespace Pickaxe.Model
 {
@@ -69,9 +70,19 @@ namespace Pickaxe.Model
 
         #endregion
 
-        private void Data_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        public void RebindInternalEvents()
         {
-            // TODO
+            foreach (var attribute in this)
+                attribute.Data.ListChanged += Data_ListChanged;
+        }
+
+        private void Data_ListChanged(object sender, ListChangedEventArgs e)
+        {
+            if (e.ListChangedType == ListChangedType.ItemChanged)
+            {
+                var index = e.NewIndex;
+                TuplesView[index].OnContentChanged();
+            }
         }
 
         #region Overrides
@@ -92,7 +103,7 @@ namespace Pickaxe.Model
                 throw new ArgumentException("Invalid relation attributes");
             }
             item.Index = index;
-            item.Data.CollectionChanged += Data_CollectionChanged;
+            item.Data.ListChanged += Data_ListChanged;
             foreach (var tupleView in TuplesView)
             {
                 tupleView.OnContentChanged();
@@ -106,7 +117,7 @@ namespace Pickaxe.Model
 
         protected override void RemoveItem(int index)
         {
-            this[index].Data.CollectionChanged += Data_CollectionChanged;
+            this[index].Data.ListChanged -= Data_ListChanged;
             base.RemoveItem(index);
             foreach (var tupleView in TuplesView)
             {
@@ -121,7 +132,7 @@ namespace Pickaxe.Model
         protected override void SetItem(int index, RelationAttribute item)
         {
             item.Index = index;
-            item.Data.CollectionChanged += Data_CollectionChanged;
+            item.Data.ListChanged += Data_ListChanged;
             if (item.Data.Count != TuplesView.Count)
             {
                 throw new ArgumentException("Invalid relation attributes");

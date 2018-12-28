@@ -5,6 +5,7 @@ using Pickaxe.Utility;
 using Pickaxe.Utility.ListExtension;
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -99,6 +100,7 @@ namespace Pickaxe.ViewModel
                                     var obj = FORMATTER.Deserialize(stream);
                                     if (obj is Relation relation)
                                     {
+                                        relation.RebindInternalEvents();
                                         Relation = relation;
                                         FileName = openFileDialog.FileName;
                                     }
@@ -132,6 +134,7 @@ namespace Pickaxe.ViewModel
                             var obj = FORMATTER.Deserialize(stream);
                             if (obj is Relation relation)
                             {
+                                relation.RebindInternalEvents();
                                 Relation = relation;
                             }
                             else
@@ -202,7 +205,7 @@ namespace Pickaxe.ViewModel
                     },
                     parameter =>
                     {
-                        var data = new ObservableCollection<Value>();
+                        var data = new BindingList<Value>();
                         data.Resize(Relation.TuplesView.Count, Value.MISSING);
                         Relation.Add(
                             new RelationAttribute("New Attribute", new AttributeType.Numeric(), data)
@@ -223,7 +226,7 @@ namespace Pickaxe.ViewModel
                     },
                     parameter =>
                     {
-                        var data = new ObservableCollection<Value>();
+                        var data = new BindingList<Value>();
                         data.Resize(Relation.TuplesView.Count, Value.MISSING);
                         Relation.Insert((int)parameter,
                             new RelationAttribute("New Attribute", new AttributeType.Numeric(), data)

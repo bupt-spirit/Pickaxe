@@ -3,6 +3,7 @@ using Pickaxe.Utility;
 using Pickaxe.Utility.ListExtension;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
 
@@ -40,7 +41,7 @@ namespace Pickaxe.ViewModel
                     },
                     parameter =>
                     {
-                        var data = new ObservableCollection<Value>();
+                        var data = new BindingList<Value>();
                         data.Resize(Relation.TuplesView.Count, Value.MISSING);
                         Relation.Add(
                             new RelationAttribute("New Attribute", new AttributeType.Numeric(), data)
@@ -63,7 +64,7 @@ namespace Pickaxe.ViewModel
                     },
                     parameter =>
                     {
-                        var data = new ObservableCollection<Value>();
+                        var data = new BindingList<Value>();
                         data.Resize(Relation.TuplesView.Count, Value.MISSING);
                         Relation.Insert((int)parameter,
                             new RelationAttribute("New Attribute", new AttributeType.Numeric(), data)
