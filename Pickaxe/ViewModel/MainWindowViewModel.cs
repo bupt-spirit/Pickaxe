@@ -1,7 +1,12 @@
 ﻿using Microsoft.Win32;
+using Pickaxe.Algorithm;
 using Pickaxe.Model;
 using Pickaxe.Utility;
+using Pickaxe.Utility.ListExtension;
+using System;
+using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows;
@@ -13,11 +18,27 @@ namespace Pickaxe.ViewModel
     {
         private Relation _relation;
         private string _fileName;
+        private int _binNumber;
 
         private ICommand _newRelation;
         private ICommand _openRelation;
+        private ICommand _reloadRelation;
         private ICommand _saveRelation;
         private ICommand _saveAsRelation;
+        private ICommand _addAttribute;
+        private ICommand _insertAttribute;
+        private ICommand _removeAttribute;
+        private ICommand _equidistanceDiscreteAttribute;
+
+        public int BinNumber
+        {
+            get => _binNumber;
+            set
+            {
+                _binNumber = value;
+                OnPropertyChanged("BinNumber");
+            }
+        }
 
         public Relation Relation
         {
@@ -53,6 +74,7 @@ namespace Pickaxe.ViewModel
                     parameter =>
                     {
                         Relation = new Relation();
+                        FileName = null;
                     })
                 );
         }
@@ -94,6 +116,29 @@ namespace Pickaxe.ViewModel
                             }
                         }
                         // Do nothing
+                    })
+                );
+        }
+
+        public ICommand ReloadRelation
+        {
+            get => _reloadRelation ?? (
+                _reloadRelation = new RelayCommand(
+                    parameter => FileName != null,
+                    parameter =>
+                    {
+                        using (var stream = new FileStream(FileName, FileMode.Open, FileAccess.Read))
+                        {
+                            var obj = FORMATTER.Deserialize(stream);
+                            if (obj is Relation relation)
+                            {
+                                Relation = relation;
+                            }
+                            else
+                            {
+                                throw new Exception($"Failed to reload file {FileName}");
+                            }
+                        }
                     })
                 );
         }
@@ -143,6 +188,87 @@ namespace Pickaxe.ViewModel
                                 FORMATTER.Serialize(stream, Relation);
                             }
                         }
+                    })
+                );
+        }
+
+        public ICommand AddAttribute
+        {
+            get => _addAttribute ?? (
+                _addAttribute = new RelayCommand(
+                    parameter =>
+                    {
+                        return Relation != null;
+                    },
+                    parameter =>
+                    {
+                        var data = new ObservableCollection<Value>();
+                        data.Resize(Relation.TuplesView.Count, Value.MISSING);
+                        Relation.Add(
+                            new RelationAttribute("New Attribute", new AttributeType.Numeric(), data)
+                            );
+                    })
+                );
+        }
+
+        public ICommand InsertAttribute
+        {
+            get => _insertAttribute ?? (
+                _insertAttribute = new RelayCommand(
+                    parameter =>
+                    {
+                        if (Relation == null)
+                            return false;
+                        return parameter is int;
+                    },
+                    parameter =>
+                    {
+                        var data = new ObservableCollection<Value>();
+                        data.Resize(Relation.TuplesView.Count, Value.MISSING);
+                        Relation.Insert((int)parameter,
+                            new RelationAttribute("New Attribute", new AttributeType.Numeric(), data)
+                            );
+                    })
+                );
+        }
+
+        public ICommand RemoveAttribute
+        {
+            get => _removeAttribute ?? (
+                _removeAttribute = new RelayCommand(
+                    parameter =>
+                    {
+                        if (Relation == null)
+                            return false;
+                        if (parameter == null)
+                            return false;
+                        return (int)parameter < Relation.Count;
+                    },
+                    parameter =>
+                    {
+                        Relation.RemoveAt((int)parameter);
+                    })
+                );
+        }
+
+        public ICommand EquidistanceDiscreteAttribute
+        {
+            get => _equidistanceDiscreteAttribute ?? (
+                _equidistanceDiscreteAttribute = new RelayCommand(
+                    parameter =>
+                    {
+                        if (Relation == null)
+                            return false;
+                        if (parameter == null)
+                            return false;
+                        if (BinNumber == 0)
+                            return false;
+                        return parameter is RelationAttribute;
+                    },
+                    parameter =>
+                    {
+                        var attribute = parameter as RelationAttribute;
+                        EquidistanceDiscrete.run(attribute, BinNumber);
                     })
                 );
         }

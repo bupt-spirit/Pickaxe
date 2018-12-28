@@ -9,6 +9,7 @@ namespace Pickaxe.Utility
     {
         [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
+
         protected virtual void OnPropertyChanged(string propertyName)
         {
             if (propertyName != "Item[]")

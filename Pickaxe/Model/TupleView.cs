@@ -72,6 +72,11 @@ namespace Pickaxe.Model
 
         public bool IsDetached() => this.Equals(Detached);
 
+        public void OnContentChanged()
+        {
+            OnPropertyChanged("Item[]");
+        }
+
         #endregion
     }
 

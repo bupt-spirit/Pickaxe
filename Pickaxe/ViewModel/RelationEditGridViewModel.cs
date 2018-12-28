@@ -1,9 +1,9 @@
 ﻿using Pickaxe.Model;
 using Pickaxe.Utility;
 using Pickaxe.Utility.ListExtension;
-using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Input;
 
 namespace Pickaxe.ViewModel
@@ -34,7 +34,10 @@ namespace Pickaxe.ViewModel
         {
             get => _addAttribute ?? (
                 _addAttribute = new RelayCommand(
-                    parameter => true,
+                    parameter =>
+                    {
+                        return Relation != null;
+                    },
                     parameter =>
                     {
                         var data = new ObservableCollection<Value>();
@@ -50,7 +53,10 @@ namespace Pickaxe.ViewModel
         {
             get => _insertAttribute ?? (
                 _insertAttribute = new RelayCommand(
-                    parameter => {
+                    parameter =>
+                    {
+                        if (Relation == null)
+                            return false;
                         if (parameter == null)
                             return false;
                         return (int)parameter <= Relation.Count;
@@ -70,7 +76,10 @@ namespace Pickaxe.ViewModel
         {
             get => _removeAttribute ?? (
                 _removeAttribute = new RelayCommand(
-                    parameter => {
+                    parameter =>
+                    {
+                        if (Relation == null)
+                            return false;
                         if (parameter == null)
                             return false;
                         return (int)parameter < Relation.Count;
@@ -86,7 +95,10 @@ namespace Pickaxe.ViewModel
         {
             get => _addTuple ?? (
                 _addTuple = new RelayCommand(
-                    parameter => {
+                    parameter =>
+                    {
+                        if (Relation == null)
+                            return false;
                         return Relation.Count != 0;
                     },
                     parameter =>
@@ -102,18 +114,15 @@ namespace Pickaxe.ViewModel
                 _insertTuple = new RelayCommand(
                     parameter =>
                     {
+                        if (Relation == null)
+                            return false;
                         if (parameter == null)
                             return false;
-                        if (Relation.Count == 0)
-                            return false;
-                        return ((IEnumerable<int>)parameter).All((i) => i <= Relation.TuplesView.Count);
+                        return (int)parameter <= Relation.TuplesView.Count;
                     },
                     parameter =>
                     {
-                        var indices = ((IEnumerable<int>)parameter).ToList();
-                        indices.Sort((x, y) => -x.CompareTo(y)); // reverse sort
-                        foreach (var index in indices)
-                            Relation.TuplesView.Insert(index, TupleView.Detached);
+                        Relation.TuplesView.Insert((int)parameter, TupleView.Detached);
                     })
                 );
         }
@@ -124,15 +133,20 @@ namespace Pickaxe.ViewModel
                 _removeTuple = new RelayCommand(
                     parameter =>
                     {
+                        if (Relation == null)
+                            return false;
                         if (parameter == null)
                             return false;
                         if (Relation.Count == 0)
                             return false;
-                        return ((IEnumerable<int>)parameter).All((i) => i < Relation.TuplesView.Count);
+                        var objects = ((Collection<object>)parameter);
+                        return objects.Count() != 0;
                     },
                     parameter =>
                     {
-                        var indices = ((IEnumerable<int>)parameter).ToList();
+                        var indices = ((IEnumerable<object>)parameter)
+                            .Select((obj) => ((TupleView)obj).TupleIndex)
+                            .ToList();
                         indices.Sort((x, y) => -x.CompareTo(y)); // reverse sort
                         foreach (var index in indices)
                             Relation.TuplesView.RemoveAt(index);

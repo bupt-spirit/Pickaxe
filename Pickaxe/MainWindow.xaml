@@ -14,6 +14,7 @@
         <viewmodel:MainWindowViewModel />
     </Window.DataContext>
     <Window.Resources>
+        <converter:AttributeTypeStringConverter x:Key="AttributeTypeStringConverter" />
         <converter:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
     </Window.Resources>
     <TabControl>
@@ -25,13 +26,13 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="*" />
-                    <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
 
                 <!--  Data set loading control -->
                 <WrapPanel Grid.Row="0" Grid.Column="0">
                     <Button VerticalAlignment="Center" Content="New" Command="{Binding NewRelation}" />
                     <Button VerticalAlignment="Center" Content="Open" Command="{Binding OpenRelation}" />
+                    <Button VerticalAlignment="Center" Content="Reload" Command="{Binding ReloadRelation}" />
                     <Button VerticalAlignment="Center" Content="Save" Command="{Binding SaveRelation}" />
                     <Button VerticalAlignment="Center" Content="Save As" Command="{Binding SaveAsRelation}" />
                     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
@@ -44,20 +45,50 @@
                     </ScrollViewer>
                 </WrapPanel>
                 <view:RelationEditGrid Grid.Row="1" Grid.Column="0"
-                                       Relation="{Binding DataContext.Relation, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" />
-                <WrapPanel Grid.Row="2" Grid.Column="0">
-                    <StackPanel Orientation="Horizontal">
-                        <Label VerticalAlignment="Center" Content="Attribute Count:" />
-                        <TextBlock VerticalAlignment="Center" Text="{Binding Relation.Count}" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Label VerticalAlignment="Center" Content="Tuple Count:" />
-                        <TextBlock VerticalAlignment="Center" Text="{Binding Relation.TuplesView.Count}" />
-                    </StackPanel>
-                </WrapPanel>
+                        Relation="{Binding DataContext.Relation, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" />
             </Grid>
         </TabItem>
-        <TabItem x:Name="tabItemPreprocess" Header="Preprocess" />
+        <TabItem x:Name="tabItemPreprocess" Header="Preprocess">
+            <Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    <DataGrid Grid.Row="0" Grid.Column="0"
+                              x:Name="attributeDataGrid"
+                              ItemsSource="{Binding Relation}"
+                              AutoGenerateColumns="False"
+                              SelectionUnit="FullRow"
+                              SelectionMode="Single"
+                              VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Auto">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
+                            <DataGridTextColumn Header="Type" Binding="{Binding Type, Converter={StaticResource AttributeTypeStringConverter}}" />
+                        </DataGrid.Columns>
+                        <DataGrid.RowHeaderTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding DataContext.Index, RelativeSource={RelativeSource AncestorType=DataGridRow}}" />
+                            </DataTemplate>
+                        </DataGrid.RowHeaderTemplate>
+                    </DataGrid>
+                    <WrapPanel Grid.Row="1" Grid.Column="0">
+                        <Button Content="Add" Command="{Binding AddAttribute}" />
+                        <Button Content="Insert" Command="{Binding InsertAttribute}" CommandParameter="{Binding SelectedIndex, ElementName=attributeDataGrid}" />
+                        <Button Content="Remove" Command="{Binding RemoveAttribute}" CommandParameter="{Binding SelectedIndex, ElementName=attributeDataGrid}" />
+                    </WrapPanel>
+                    <StackPanel Grid.Row="2" Grid.Column="0">
+                        <TextBox Text="{Binding BinNumber}" />
+                        <Button Content="Equidistance Discrete" Command="{Binding EquidistanceDiscreteAttribute}" CommandParameter="{Binding SelectedItem, ElementName=attributeDataGrid}" />
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </TabItem>
         <TabItem x:Name="tabItemClassify" Header="Classify" />
         <TabItem x:Name="tabItemCluster" Header="Cluster" />
         <TabItem x:Name="tabItemAssociate" Header="Associate" />

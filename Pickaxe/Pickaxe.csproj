@@ -72,6 +72,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Algorithm\EquidistanceDiscrete.cs" />
     <Compile Include="Model\RelationAttribute.cs" />
     <Compile Include="Model\TuplesView.cs" />
     <Compile Include="Utility\BindingProxy.cs" />
@@ -88,6 +89,9 @@
     <Compile Include="Utility\Converter.cs" />
     <Compile Include="ViewModel\RelationEditGridViewModel.cs" />
     <Compile Include="Utility\NotifyPropertyChangedBase.cs" />
+    <Compile Include="View\AttributeEditDialog.xaml.cs">
+      <DependentUpon>AttributeEditDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\RelationEditGrid.xaml.cs">
       <DependentUpon>RelationEditGrid.xaml</DependentUpon>
     </Compile>
@@ -104,6 +108,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="OptionDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\AttributeEditDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
