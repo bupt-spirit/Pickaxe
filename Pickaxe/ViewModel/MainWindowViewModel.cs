@@ -10,7 +10,7 @@ using System.Windows.Input;
 namespace Pickaxe.ViewModel
 {
     public class MainWindowViewModel : NotifyPropertyChangedBase
-    {
+    {//能够通知property的更改，relation：表
         private Relation _relation;
         private string _fileName;
 
@@ -21,11 +21,11 @@ namespace Pickaxe.ViewModel
 
         public Relation Relation
         {
-            get => _relation;
+            get => _relation;//语法糖
             set
             {
-                _relation = value;
-                OnPropertyChanged("Relation");
+                _relation = value;//value关键字，是set时的右值
+                OnPropertyChanged("Relation");//告知change了
             }
         }
 
@@ -47,7 +47,7 @@ namespace Pickaxe.ViewModel
 
         public ICommand NewRelation
         {
-            get => _newRelation ?? (
+            get => _newRelation ?? (//??:不是null返回前面的东西，是null返回后面
                 _newRelation = new RelayCommand(
                     parameter => Relation.Count != 0,
                     parameter =>
