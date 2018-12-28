@@ -72,6 +72,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Algorithm\EquifrequentDiscrete.cs" />
     <Compile Include="Algorithm\EquidistanceDiscrete.cs" />
     <Compile Include="Model\RelationAttribute.cs" />
     <Compile Include="Model\TuplesView.cs" />

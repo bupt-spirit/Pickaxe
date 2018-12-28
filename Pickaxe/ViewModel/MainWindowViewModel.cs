@@ -30,6 +30,7 @@ namespace Pickaxe.ViewModel
         private ICommand _insertAttribute;
         private ICommand _removeAttribute;
         private ICommand _equidistanceDiscreteAttribute;
+        private ICommand _equifrequentDiscreteAttribute;
 
         public int BinNumber
         {
@@ -271,7 +272,29 @@ namespace Pickaxe.ViewModel
                     parameter =>
                     {
                         var attribute = parameter as RelationAttribute;
-                        EquidistanceDiscrete.run(attribute, BinNumber);
+                        EquidistanceDiscrete.Run(attribute, BinNumber);
+                    })
+                );
+        }
+
+        public ICommand EquifrequentDiscreteAttribute
+        {
+            get => _equifrequentDiscreteAttribute ?? (
+                _equifrequentDiscreteAttribute = new RelayCommand(
+                    parameter =>
+                    {
+                        if (Relation == null)
+                            return false;
+                        if (parameter == null)
+                            return false;
+                        if (BinNumber == 0)
+                            return false;
+                        return parameter is RelationAttribute;
+                    },
+                    parameter =>
+                    {
+                        var attribute = parameter as RelationAttribute;
+                        EquifrequentDiscrete.Run(attribute, BinNumber);
                     })
                 );
         }

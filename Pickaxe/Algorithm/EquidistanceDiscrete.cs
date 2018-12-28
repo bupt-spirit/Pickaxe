@@ -1,6 +1,7 @@
 ﻿using Pickaxe.Model;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,7 +10,7 @@ namespace Pickaxe.Algorithm
 {
     class EquidistanceDiscrete
     {
-        public static void run(RelationAttribute attribute, int binNumber)
+        public static void Run(RelationAttribute attribute, int binNumber)
         {
             if (!(attribute.Type is AttributeType.Numeric))
                 return;
