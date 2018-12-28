@@ -271,7 +271,7 @@ namespace Pickaxe.ViewModel
                     parameter =>
                     {
                         var attribute = parameter as RelationAttribute;
-                        EquidistanceDiscrete.run(attribute, BinNumber);
+                        EquidistanceDiscrete.Run(attribute, BinNumber);
                     })
                 );
         }
