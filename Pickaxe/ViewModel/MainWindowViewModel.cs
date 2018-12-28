@@ -29,7 +29,14 @@ namespace Pickaxe.ViewModel
         private ICommand _addAttribute;
         private ICommand _insertAttribute;
         private ICommand _removeAttribute;
+
+        #region Temprary
+
         private ICommand _equidistanceDiscreteAttribute;
+        private ICommand _equifrequentDiscreteAttribute;
+        private ICommand _minMaxNormalizeAttribute;
+
+        #endregion
 
         public int BinNumber
         {
@@ -254,6 +261,8 @@ namespace Pickaxe.ViewModel
                 );
         }
 
+        #region Temprary
+
         public ICommand EquidistanceDiscreteAttribute
         {
             get => _equidistanceDiscreteAttribute ?? (
@@ -275,6 +284,50 @@ namespace Pickaxe.ViewModel
                     })
                 );
         }
+
+        public ICommand EquifrequentDiscreteAttribute
+        {
+            get => _equifrequentDiscreteAttribute ?? (
+                _equifrequentDiscreteAttribute = new RelayCommand(
+                    parameter =>
+                    {
+                        if (Relation == null)
+                            return false;
+                        if (parameter == null)
+                            return false;
+                        if (BinNumber == 0)
+                            return false;
+                        return parameter is RelationAttribute;
+                    },
+                    parameter =>
+                    {
+                        var attribute = parameter as RelationAttribute;
+                        EquifrequentDiscrete.Run(attribute, BinNumber);
+                    })
+                );
+        }
+
+        public ICommand MinMaxNormalizeAttribute
+        {
+            get => _minMaxNormalizeAttribute ?? (
+                _minMaxNormalizeAttribute = new RelayCommand(
+                    parameter =>
+                    {
+                        if (Relation == null)
+                            return false;
+                        if (parameter == null)
+                            return false;
+                        return parameter is RelationAttribute;
+                    },
+                    parameter =>
+                    {
+                        var attribute = parameter as RelationAttribute;
+                        MinMaxNormalize.Run(attribute);
+                    })
+                );
+        }
+
+        #endregion
 
         #region Static members
 

@@ -6,7 +6,7 @@ namespace Pickaxe.Utility
 {
     [Serializable]
     public class NotifyPropertyChangedBase : INotifyPropertyChanged
-    {
+    {//提供propertyChanged事件，是公共的，handler由系统定义
         [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
 
