@@ -32,6 +32,7 @@ namespace Pickaxe.ViewModel
         private ICommand _equidistanceDiscreteAttribute;
         private ICommand _equifrequentDiscreteAttribute;
         private ICommand _minMaxNormalizeAttribute;
+        private ICommand _zScoreNormalizeAttribute;
 
         public int BinNumber
         {
@@ -316,6 +317,26 @@ namespace Pickaxe.ViewModel
                     {
                         var attribute = parameter as RelationAttribute;
                         MinMaxNormalize.Run(attribute);
+                    })
+                );
+        }
+
+        public ICommand ZScoreNormalizeAttribute
+        {
+            get => _zScoreNormalizeAttribute ?? (
+                _zScoreNormalizeAttribute = new RelayCommand(
+                    parameter =>
+                    {
+                        if (Relation == null)
+                            return false;
+                        if (parameter == null)
+                            return false;
+                        return parameter is RelationAttribute;
+                    },
+                    parameter =>
+                    {
+                        var attribute = parameter as RelationAttribute;
+                        ZScoreNormalize.Run(attribute);
                     })
                 );
         }

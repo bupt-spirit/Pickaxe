@@ -75,6 +75,7 @@
     <Compile Include="Algorithm\EquifrequentDiscrete.cs" />
     <Compile Include="Algorithm\EquidistanceDiscrete.cs" />
     <Compile Include="Algorithm\MinMaxNormalize.cs" />
+    <Compile Include="Algorithm\ZScoreNormalize.cs" />
     <Compile Include="Model\RelationAttribute.cs" />
     <Compile Include="Model\TuplesView.cs" />
     <Compile Include="Utility\BindingProxy.cs" />
