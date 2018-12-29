@@ -16,7 +16,7 @@ using System.Windows.Input;
 namespace Pickaxe.ViewModel
 {
     public class MainWindowViewModel : NotifyPropertyChangedBase
-    {//能够通知property的更改，relation：表
+    {
         private Relation _relation;
         private string _fileName;
         private int _binNumber;
@@ -29,10 +29,15 @@ namespace Pickaxe.ViewModel
         private ICommand _addAttribute;
         private ICommand _insertAttribute;
         private ICommand _removeAttribute;
+
+        #region Temprary
+
         private ICommand _equidistanceDiscreteAttribute;
         private ICommand _equifrequentDiscreteAttribute;
         private ICommand _minMaxNormalizeAttribute;
         private ICommand _zScoreNormalizeAttribute;
+
+        #endregion
 
         public int BinNumber
         {
@@ -46,11 +51,11 @@ namespace Pickaxe.ViewModel
 
         public Relation Relation
         {
-            get => _relation;//语法糖
+            get => _relation;
             set
             {
-                _relation = value;//value关键字，是set时的右值
-                OnPropertyChanged("Relation");//告知change了
+                _relation = value;
+                OnPropertyChanged("Relation");
             }
         }
 
@@ -72,7 +77,7 @@ namespace Pickaxe.ViewModel
 
         public ICommand NewRelation
         {
-            get => _newRelation ?? (//??:不是null返回前面的东西，是null返回后面
+            get => _newRelation ?? (
                 _newRelation = new RelayCommand(
                     parameter => Relation.Count != 0,
                     parameter =>
@@ -208,7 +213,7 @@ namespace Pickaxe.ViewModel
                     },
                     parameter =>
                     {
-                        var data = new BindingList<Value>();
+                        var data = new ObservableCollection<Value>();
                         data.Resize(Relation.TuplesView.Count, Value.MISSING);
                         Relation.Add(
                             new RelationAttribute("New Attribute", new AttributeType.Numeric(), data)
@@ -229,7 +234,7 @@ namespace Pickaxe.ViewModel
                     },
                     parameter =>
                     {
-                        var data = new BindingList<Value>();
+                        var data = new ObservableCollection<Value>();
                         data.Resize(Relation.TuplesView.Count, Value.MISSING);
                         Relation.Insert((int)parameter,
                             new RelationAttribute("New Attribute", new AttributeType.Numeric(), data)
@@ -256,6 +261,8 @@ namespace Pickaxe.ViewModel
                     })
                 );
         }
+
+        #region Temprary
 
         public ICommand EquidistanceDiscreteAttribute
         {
@@ -320,7 +327,7 @@ namespace Pickaxe.ViewModel
                     })
                 );
         }
-
+        
         public ICommand ZScoreNormalizeAttribute
         {
             get => _zScoreNormalizeAttribute ?? (
@@ -340,6 +347,8 @@ namespace Pickaxe.ViewModel
                     })
                 );
         }
+        #endregion
+            
         #region Static members
 
         private static readonly string FILE_FILTER = "Pickaxe files (*.pickaxe)|*.pickaxe|All files (*.*)|*.*";

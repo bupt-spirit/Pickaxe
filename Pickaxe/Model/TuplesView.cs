@@ -44,7 +44,7 @@ namespace Pickaxe.Model
                 attribute.Data.Insert(index, Value.MISSING);
             base.InsertItem(index, new TupleView(relation, index));
             for (var i = index + 1; i < Count; ++i)
-                SetItem(i, TupleView.Detached);
+                this[i].SetTupleIndexWithoutUpdate(i);
         }
 
         protected override void RemoveItem(int index)
@@ -53,7 +53,7 @@ namespace Pickaxe.Model
                 attribute.Data.RemoveAt(index);
             base.RemoveItem(index);
             for (var i = index; i < Count; ++i)
-                SetItem(i, TupleView.Detached);
+                this[i].SetTupleIndexWithoutUpdate(i);
         }
 
         protected override void SetItem(int index, TupleView item)

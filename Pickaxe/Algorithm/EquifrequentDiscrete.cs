@@ -22,7 +22,7 @@ namespace Pickaxe.Algorithm
             }
         }
         public static void Run(RelationAttribute attribute, int binNumber)
-        {//等频分箱
+        {
             if (!(attribute.Type is AttributeType.Numeric))
                 return;
             var originCount = attribute.Data.Count;
@@ -33,7 +33,7 @@ namespace Pickaxe.Algorithm
                 return;
             int binSize = (int)Math.Ceiling(((temp.Count - 1) / (double)binNumber));
             List<int> binCount = new List<int>();
-            binCount.Resize(binNumber, 0);//用来跟踪每个箱子里已经有多少个数字了
+            binCount.Resize(binNumber, 0); // Tracing the count in every bin
             for (int k = 0; k < temp.Count; k++)
             {
                 int j = (int)Math.Floor(k / (double)binNumber);

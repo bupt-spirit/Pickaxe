@@ -10,7 +10,7 @@ namespace Pickaxe.Algorithm
     class MinMaxNormalize
     {
         public static void Run(RelationAttribute attribute)
-        {//最大最小规范化
+        {
             if (!(attribute.Type is AttributeType.Numeric))
                 return;
             Value max = Single.NegativeInfinity, min = Single.PositiveInfinity;
