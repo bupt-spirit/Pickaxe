@@ -13,6 +13,7 @@ namespace Pickaxe.Model
         private AttributeType _type;
         private ObservableCollection<Value> _data;
         private string _name;
+        private StatisticView _statisticView;
 
         public event NotifyCollectionChangedEventHandler DataCollectionChanged;
 
@@ -52,6 +53,12 @@ namespace Pickaxe.Model
                 _index = value;
                 OnPropertyChanged("Index");
             }
+        }
+
+        public StatisticView StatisticView
+        {
+            get => _statisticView ?? (
+                _statisticView = new StatisticView(this));
         }
 
         public RelationAttribute(string name, AttributeType type, ObservableCollection<Value> data)

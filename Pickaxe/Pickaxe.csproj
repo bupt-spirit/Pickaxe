@@ -91,8 +91,9 @@
     <Compile Include="Model\RelationAttribute.cs" />
     <Compile Include="Model\TuplesView.cs" />
     <Compile Include="Utility\BindingProxy.cs" />
+    <Compile Include="Utility\ObservableDictionary.cs" />
     <Compile Include="Utility\RelayCommand.cs" />
-    <Compile Include="Utility\StatisticView.cs" />
+    <Compile Include="Model\StatisticView.cs" />
     <Compile Include="Utility\ValidationRules.cs" />
     <Compile Include="ViewModel\AttributeEditDialogViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
