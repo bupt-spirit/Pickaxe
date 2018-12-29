@@ -88,6 +88,7 @@
                         <Button Content="Equidistance Discrete" Command="{Binding EquidistanceDiscreteAttribute}" CommandParameter="{Binding SelectedItem, ElementName=attributeDataGrid}" />
                         <Button Content="Equifrequent Discrete" Command="{Binding EquifrequentDiscreteAttribute}" CommandParameter="{Binding SelectedItem, ElementName=attributeDataGrid}"/>
                         <Button Content="MinMax Normalize" Command="{Binding MinMaxNormalizeAttribute}" CommandParameter="{Binding SelectedItem, ElementName=attributeDataGrid}"/>
+                        <Button Content="ZScore Normalize" Command="{Binding ZScoreNormalizeAttribute}" CommandParameter="{Binding SelectedItem, ElementName=attributeDataGrid}"/>
                     </StackPanel>
                 </Grid>
             </Grid>
