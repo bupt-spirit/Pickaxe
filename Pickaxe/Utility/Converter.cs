@@ -111,4 +111,18 @@ namespace Pickaxe.Utility.Converter
             throw new NotImplementedException();
         }
     }
+
+    class ObjectToTypeStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var type = value.GetType();
+            return type.Name;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

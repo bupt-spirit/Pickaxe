@@ -3,6 +3,7 @@ using Pickaxe.Algorithm;
 using Pickaxe.Model;
 using Pickaxe.Utility;
 using Pickaxe.Utility.ListExtension;
+using Pickaxe.View;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -212,11 +213,11 @@ namespace Pickaxe.ViewModel
                     },
                     parameter =>
                     {
-                        var data = new ObservableCollection<Value>();
-                        data.Resize(Relation.TuplesView.Count, Value.MISSING);
-                        Relation.Add(
-                            new RelationAttribute("New Attribute", new AttributeType.Numeric(), data)
-                            );
+                        var attribute = ShowDialogForNewAttribute();
+                        if (attribute != null)
+                        {
+                            Relation.Add(attribute);
+                        }
                     })
                 );
         }
@@ -233,11 +234,11 @@ namespace Pickaxe.ViewModel
                     },
                     parameter =>
                     {
-                        var data = new ObservableCollection<Value>();
-                        data.Resize(Relation.TuplesView.Count, Value.MISSING);
-                        Relation.Insert((int)parameter,
-                            new RelationAttribute("New Attribute", new AttributeType.Numeric(), data)
-                            );
+                        var attribute = ShowDialogForNewAttribute();
+                        if (attribute != null)
+                        {
+                            Relation.Insert((int)parameter, attribute);
+                        }
                     })
                 );
         }
@@ -333,6 +334,26 @@ namespace Pickaxe.ViewModel
 
         private static readonly string FILE_FILTER = "Pickaxe files (*.pickaxe)|*.pickaxe|All files (*.*)|*.*";
         private static readonly IFormatter FORMATTER = new BinaryFormatter();
+
+        #endregion
+
+
+        #region Methods
+
+        private RelationAttribute ShowDialogForNewAttribute()
+        {
+            var dialog = new AttributeEditDialog();
+            if (dialog.ShowDialog() == true)
+            {
+                var data = new ObservableCollection<Value>();
+                data.Resize(Relation.TuplesView.Count, Value.MISSING);
+                return new RelationAttribute(dialog.ViewModel.Name, dialog.ViewModel.AttributeType, data);
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         #endregion
     }

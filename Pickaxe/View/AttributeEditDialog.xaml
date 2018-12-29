@@ -4,10 +4,68 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Pickaxe.View"
+        xmlns:viewmodel="clr-namespace:Pickaxe.ViewModel"
+        xmlns:converter="clr-namespace:Pickaxe.Utility.Converter"
+        xmlns:validation="clr-namespace:Pickaxe.Utility.ValidationRules"
         mc:Ignorable="d"
         Title="AttributeEditDialog"
-        SizeToContent="WidthAndHeight">
-    <Grid>
+        SizeToContent="WidthAndHeight"
+        Loaded="Window_Loaded">
+    <Window.DataContext>
+        <viewmodel:AttributeEditDialogViewModel />
+    </Window.DataContext>
+    <Window.Resources>
+        <converter:AttributeTypeStringConverter x:Key="AttributeTypeStringConverter" />
+
+        <DataTemplate x:Key="ComboxBoxItemTemplate">
+            <TextBlock Text="{Binding Converter={StaticResource AttributeTypeStringConverter}}"/>
+        </DataTemplate>
+
+        <TextBlock x:Key="NumericLabelSetting" 
+                   Text="No label setting for numeric value"
+                   Foreground="Gray"/>
+        <Grid x:Key="BinaryLabelSetting">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Label Grid.Row="0" Grid.Column="0"
+                           Content="True Label" />
+            <TextBox  Grid.Row="0" Grid.Column="1"
+                              Text="{Binding BinaryType.TrueLabel}" />
+            <Label  Grid.Row="1" Grid.Column="0"
+                            Content="False Label" />
+            <TextBox  Grid.Row="1" Grid.Column="1"
+                              Text="{Binding BinaryType.FalseLabel}" />
+        </Grid>
+
+        <Grid x:Key="NominalLabelSetting">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <ListView Grid.Row="0" Grid.Column="0"
+                              ItemsSource="{Binding NominalType.NominalLabels}"
+                              SelectedIndex="{Binding SelectedNominalValueIndex}" />
+            <TextBox Grid.Row="1" Grid.Column="0"
+                             Text="{Binding NewNominalValue, UpdateSourceTrigger=PropertyChanged}"/>
+            <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal">
+                <Button Content="Add" Command="{Binding AddNominalValue}"/>
+                <Button Content="Insert" Command="{Binding InsertNominalValue}" />
+                <Button Content="Replace" Command="{Binding ReplaceNominalValue}" />
+                <Button Content="Remove" Command="{Binding RemoveNominalValue}" />
+            </StackPanel>
+        </Grid>
+    </Window.Resources>
+    <Grid VerticalAlignment="Center">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
@@ -19,21 +77,38 @@
             <ColumnDefinition Width="*" MinWidth="300" />
         </Grid.ColumnDefinitions>
         <Label Grid.Row="0" Grid.Column="0" Content="Name" />
-        <TextBox Grid.Row="0" Grid.Column="1" />
+        <TextBox Grid.Row="0" Grid.Column="1">
+            <TextBox.Text>
+                <Binding Path="Name">
+                    <Binding.ValidationRules>
+                        <validation:StringNotEmptyValidationRule />
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
         <Label Grid.Row="1" Grid.Column="0" Content="Type" />
-        <TextBox Grid.Row="1" Grid.Column="1" />
-        <Label Grid.Row="2" Grid.Column="0" Content="Name" />
-        <Grid Grid.Row="3" Grid.Column="0">
+        <ComboBox Grid.Row="1" Grid.Column="1"
+                  x:Name="comboBox"
+                  SelectionChanged="ComboBox_SelectionChanged">
+            <ComboBoxItem x:Name="defaultComboBoxItem"
+                          Content="{Binding NumericType}" ContentTemplate="{StaticResource ComboxBoxItemTemplate}" />
+            <ComboBoxItem Content="{Binding BinaryType}" ContentTemplate="{StaticResource ComboxBoxItemTemplate}" />
+            <ComboBoxItem Content="{Binding NominalType}" ContentTemplate="{StaticResource ComboxBoxItemTemplate}" />
+        </ComboBox>
+        <Label Grid.Row="2" Grid.Column="0" Content="Labels" />
+        <Grid Grid.Row="2" Grid.Column="1"
+              MinHeight="200"
+              x:Name="labelSettingGrid">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="auto" />
-                <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto" />
-            </Grid.RowDefinitions>
-            <Button Grid.Row="0" Grid.Column="1" Content="Ok" />
-            <Button Grid.Row="0" Grid.Column="2" Content="Cancel" IsCancel="True" />
         </Grid>
+        <WrapPanel Grid.Row="3" Grid.Column="1" HorizontalAlignment="Right">
+            <Button Content="Ok" Click="OkButton_Click" IsDefault="True" />
+            <Button Content="Cancel" IsCancel="True" />
+        </WrapPanel>
     </Grid>
 </Window>

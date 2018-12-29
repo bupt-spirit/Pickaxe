@@ -46,8 +46,10 @@
 
         <ContextMenu x:Key="DataGridContextMenu">
             <MenuItem Header="Add Tuple" Command="{Binding AddTuple}" />
-            <MenuItem Header="Add Attribute" Command="{Binding AddAttribute}" />
-            <MenuItem Header="Remove Selected Tuples" Command="{Binding Data.RemoveTuple, Source={StaticResource ViewModelProxy}}" />
+            <!--<MenuItem Header="Add Attribute" Command="{Binding AddAttribute}" />-->
+            <!--<MenuItem Header="Insert Tuple" Command="{Binding Data.InsertTuple, Source={StaticResource ViewModelProxy}}"
+                      CommandParameter="{Binding SelectedIndex, Source={x:Reference Name=dataGrid}}" />-->
+            <MenuItem Header="Remove Tuples" Command="{Binding Data.RemoveTuple, Source={StaticResource ViewModelProxy}}" />
         </ContextMenu>
 
         <ContextMenu x:Key="DataGridRowContextMenu">
@@ -58,7 +60,7 @@
                       CommandParameter="{Binding SelectedItems, Source={x:Reference Name=dataGrid}}"/>
         </ContextMenu>
 
-        <ContextMenu x:Key="DataGridColumnHeaderContextMenu">
+        <!--<ContextMenu x:Key="DataGridColumnHeaderContextMenu">
             <MenuItem Header="Add Attribute"
                       Command="{Binding Data.AddAttribute, Source={StaticResource ViewModelProxy}}" />
             <MenuItem Header="Insert Attribute"
@@ -67,7 +69,7 @@
             <MenuItem Header="Remove Attribute"
                       Command="{Binding Data.RemoveAttribute,  Source={StaticResource ViewModelProxy}}"
                       CommandParameter="{Binding Index}"/>
-        </ContextMenu>
+        </ContextMenu>-->
     </UserControl.Resources>
 
     <Grid>
@@ -96,11 +98,11 @@
                     <Setter Property="ContextMenu" Value="{StaticResource DataGridRowContextMenu}" />
                 </Style>
             </DataGrid.RowStyle>
-            <DataGrid.ColumnHeaderStyle>
+            <!--<DataGrid.ColumnHeaderStyle>
                 <Style TargetType="{x:Type DataGridColumnHeader}">
                     <Setter Property="ContextMenu" Value="{StaticResource DataGridColumnHeaderContextMenu}" />
                 </Style>
-            </DataGrid.ColumnHeaderStyle>
+            </DataGrid.ColumnHeaderStyle>-->
             <DataGrid.RowHeaderTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding DataContext.TupleIndex, RelativeSource={RelativeSource AncestorType=DataGridRow}}" />
@@ -109,7 +111,7 @@
         </DataGrid>
         <WrapPanel Grid.Row="1" Grid.Column="0">
             <WrapPanel VerticalAlignment="Center">
-                <Button Content="Add Attribute" Command="{Binding AddAttribute}"/>
+                <!--<Button Content="Add Attribute" Command="{Binding AddAttribute}"/>-->
                 <Button Content="Add Tuple" Command="{Binding AddTuple}" />
                 <Button Content="Remove Tuples" Command="{Binding RemoveTuple}" CommandParameter="{Binding SelectedItems, ElementName=dataGrid}" />
             </WrapPanel>
