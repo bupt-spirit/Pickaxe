@@ -13,6 +13,8 @@ namespace Pickaxe.Model
         private AttributeType _type;
         private ObservableCollection<Value> _data;
         private string _name;
+
+        [NonSerialized]
         private StatisticView _statisticView;
 
         public event NotifyCollectionChangedEventHandler DataCollectionChanged;

@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Markup;
 
-namespace Pickaxe.Algorithm.Preprocess
+namespace Pickaxe.Algorithms.Preprocess.Normalize
 {
     class ZScoreNormalize : AlgorithmBase
     {

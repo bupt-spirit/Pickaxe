@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -63,6 +65,19 @@ namespace Pickaxe.AlgorithmFramework
                 _associateAlgorithms = new ObservableCollection<IAlgorithm>(
                     Algorithms.Where((algorithm) => algorithm.Type == AlgorithmType.Associate)
                 ));
+        }
+
+        #endregion
+
+        #region Constructor
+
+        public AlgorithmDiscovery()
+        {
+            List<Assembly> allAssemblies = new List<Assembly>();
+            string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+            foreach (string dll in Directory.GetFiles(path, "*.dll"))
+                allAssemblies.Add(Assembly.LoadFile(dll));
         }
 
         #endregion

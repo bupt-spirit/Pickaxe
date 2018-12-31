@@ -5,6 +5,10 @@ VisualStudioVersion = 15.0.28307.136
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pickaxe", "Pickaxe\Pickaxe.csproj", "{8AD98F70-ED89-4E66-BA7B-311FD9DD5C10}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PickaxeAlgorithms", "PickaxeAlgorithms\PickaxeAlgorithms.csproj", "{A93E6DEB-E9AD-4EEA-87EF-1CFC1D44B5C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PickaxeCore", "PickaxeCore\PickaxeCore.csproj", "{175541D8-BC95-4CE2-AF68-9F1764506E3B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,22 @@ Global
 		{8AD98F70-ED89-4E66-BA7B-311FD9DD5C10}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8AD98F70-ED89-4E66-BA7B-311FD9DD5C10}.Release|x86.ActiveCfg = Release|Any CPU
 		{8AD98F70-ED89-4E66-BA7B-311FD9DD5C10}.Release|x86.Build.0 = Release|Any CPU
+		{A93E6DEB-E9AD-4EEA-87EF-1CFC1D44B5C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A93E6DEB-E9AD-4EEA-87EF-1CFC1D44B5C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A93E6DEB-E9AD-4EEA-87EF-1CFC1D44B5C2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A93E6DEB-E9AD-4EEA-87EF-1CFC1D44B5C2}.Debug|x86.Build.0 = Debug|Any CPU
+		{A93E6DEB-E9AD-4EEA-87EF-1CFC1D44B5C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A93E6DEB-E9AD-4EEA-87EF-1CFC1D44B5C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A93E6DEB-E9AD-4EEA-87EF-1CFC1D44B5C2}.Release|x86.ActiveCfg = Release|Any CPU
+		{A93E6DEB-E9AD-4EEA-87EF-1CFC1D44B5C2}.Release|x86.Build.0 = Release|Any CPU
+		{175541D8-BC95-4CE2-AF68-9F1764506E3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{175541D8-BC95-4CE2-AF68-9F1764506E3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{175541D8-BC95-4CE2-AF68-9F1764506E3B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{175541D8-BC95-4CE2-AF68-9F1764506E3B}.Debug|x86.Build.0 = Debug|Any CPU
+		{175541D8-BC95-4CE2-AF68-9F1764506E3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{175541D8-BC95-4CE2-AF68-9F1764506E3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{175541D8-BC95-4CE2-AF68-9F1764506E3B}.Release|x86.ActiveCfg = Release|Any CPU
+		{175541D8-BC95-4CE2-AF68-9F1764506E3B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

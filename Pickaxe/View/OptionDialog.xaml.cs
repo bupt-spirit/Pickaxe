@@ -4,19 +4,11 @@ using Pickaxe.Utility.Converter;
 using Pickaxe.ViewModel;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace Pickaxe
 {
@@ -37,7 +29,7 @@ namespace Pickaxe
 
         private void Window_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            
+
             if (e.OldValue != null)
             {
                 var old = (OptionDialogViewModel)e.OldValue;
@@ -65,6 +57,11 @@ namespace Pickaxe
             var row = 0;
             foreach (var option in ViewModel.Options)
             {
+                if (option.Type == typeof(IEnumerable<RelationAttribute>))
+                {
+                    option.Value = Enumerable.Empty<RelationAttribute>();
+                }
+
                 optionGrid.RowDefinitions.Add(new RowDefinition
                 {
                     Height = GridLength.Auto,
@@ -84,6 +81,8 @@ namespace Pickaxe
                 Grid.SetRow(input, row);
                 Grid.SetColumn(input, 1);
                 optionGrid.Children.Add(input);
+
+                row += 1;
             }
         }
 
@@ -139,7 +138,8 @@ namespace Pickaxe
             {
                 var listView = (ListView)FindResource("SingleSelectionAttributeListView");
                 listView.Tag = option;
-                BindingOperations.SetBinding(listView, ListView.SelectedItemProperty, new Binding("Tag.Value") {
+                BindingOperations.SetBinding(listView, ListView.SelectedItemProperty, new Binding("Tag.Value")
+                {
                     RelativeSource = RelativeSource.Self,
                 });
                 element = listView;

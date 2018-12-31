@@ -2,7 +2,6 @@
 using LiveCharts.Wpf;
 using Microsoft.Win32;
 using Pickaxe.AlgorithmFramework;
-using Pickaxe.AlgorithmStandalone.Preprocess;
 using Pickaxe.Model;
 using Pickaxe.Utility;
 using Pickaxe.Utility.ListExtension;
@@ -16,7 +15,6 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Markup;
 
 namespace Pickaxe.ViewModel
 {
