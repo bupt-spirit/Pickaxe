@@ -14,7 +14,7 @@
         WindowStartupLocation="CenterOwner"
         Loaded="Window_Loaded">
     <Window.DataContext>
-        <viewmodel:OptionDialogViewModel />
+        <viewmodel:AttributeEditDialogViewModel />
     </Window.DataContext>
     <Window.Resources>
         <converter:AttributeTypeStringConverter x:Key="AttributeTypeStringConverter" />
