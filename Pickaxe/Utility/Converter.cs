@@ -29,6 +29,72 @@ namespace Pickaxe.Utility.Converter
         }
     }
 
+    class IntWithDefaultStringConverter : IValueConverter
+    {
+        public int DefaultValue { get; set; }
+
+        public IntWithDefaultStringConverter(int defaultValue)
+        {
+            DefaultValue = defaultValue;
+        }
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is int inInt)
+                return inInt.ToString();
+            else
+                throw new ArgumentException("not a int value");
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is string inString)
+            {
+                if (int.TryParse(inString, out int inInt))
+                    return inInt;
+                else
+                    return DefaultValue;
+            }
+            else
+            {
+                throw new ArgumentException("not a string value");
+            }
+        }
+    }
+
+    class FloatWithDefaultStringConverter : IValueConverter
+    {
+        public float DefaultValue { get; set; }
+
+        public FloatWithDefaultStringConverter(float defaultValue)
+        {
+            DefaultValue = defaultValue;
+        }
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is float inFloat)
+                return inFloat.ToString();
+            else
+                throw new ArgumentException("not a int value");
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is string inString)
+            {
+                if (float.TryParse(inString, out float inFloat))
+                    return inFloat;
+                else
+                    return DefaultValue;
+            }
+            else
+            {
+                throw new ArgumentException("not a string value");
+            }
+        }
+    }
+
     class AttributeTypeStringConverter : IValueConverter
     {
         public static AttributeType.Numeric numericAttributeType = new AttributeType.Numeric();

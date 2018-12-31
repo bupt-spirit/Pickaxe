@@ -1,6 +1,7 @@
 ﻿using Pickaxe.Model;
 using Pickaxe.Utility.Converter;
 using Pickaxe.ViewModel;
+using static Pickaxe.Utility.VisualParent;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -224,22 +225,8 @@ namespace Pickaxe.View
 
         private void DataGridCell_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            var dependencyObject = (DependencyObject)sender;
-            while (dependencyObject != null && !(dependencyObject is DataGridCell))
-            {
-                dependencyObject = VisualTreeHelper.GetParent(dependencyObject);
-            }
-            if (dependencyObject is DataGridCell dataGridCell)
-            {
-                if (dataGridCell.IsEditing)
-                {
-                    dataGridCell.IsEditing = false;
-                }
-            }
-            else
-            {
-                throw new NotImplementedException();
-            }
+            var cell = GetVisualParentByType((DependencyObject)sender, typeof(DataGridCell)) as DataGridCell;
+            cell.IsEditing = false;
         }
 
         #endregion // Event handlers

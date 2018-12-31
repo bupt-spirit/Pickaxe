@@ -1,7 +1,7 @@
 ﻿using LiveCharts;
 using LiveCharts.Wpf;
 using Microsoft.Win32;
-using Pickaxe.Algorithm.Preprocess;
+using Pickaxe.AlgorithmStandalone.Preprocess;
 using Pickaxe.Model;
 using Pickaxe.Utility;
 using Pickaxe.Utility.ListExtension;
@@ -440,8 +440,19 @@ namespace Pickaxe.ViewModel
                     },
                     parameter =>
                     {
-                        var attribute = parameter as RelationAttribute;
-                        ZScoreNormalize.Run(attribute);
+                        var algorithm = new Algorithm.Preprocess.ZScoreNormalize();
+                        var dialog = new OptionDialog();
+                        dialog.ViewModel.Relation = Relation;
+                        dialog.ViewModel.Name = algorithm.Name;
+                        dialog.ViewModel.Description = algorithm.Description;
+                        dialog.ViewModel.Options = algorithm.Options;
+                        if (dialog.ShowDialog() == true)
+                        {
+                            algorithm.Run();
+                        }
+
+                        //var attribute = parameter as RelationAttribute;
+                        //ZScoreNormalize.Run(attribute);
                     })
                 );
         }

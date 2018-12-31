@@ -8,11 +8,13 @@
         xmlns:converter="clr-namespace:Pickaxe.Utility.Converter"
         xmlns:validation="clr-namespace:Pickaxe.Utility.ValidationRules"
         mc:Ignorable="d"
-        Title="AttributeEditDialog"
+        Title="Edit Attribute"
         SizeToContent="WidthAndHeight"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner"
         Loaded="Window_Loaded">
     <Window.DataContext>
-        <viewmodel:AttributeEditDialogViewModel />
+        <viewmodel:OptionDialogViewModel />
     </Window.DataContext>
     <Window.Resources>
         <converter:AttributeTypeStringConverter x:Key="AttributeTypeStringConverter" />

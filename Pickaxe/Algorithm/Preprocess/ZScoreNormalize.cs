@@ -1,17 +1,38 @@
-﻿using Pickaxe.Model;
+﻿using Pickaxe.AlgorithmFramework;
+using Pickaxe.Model;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Pickaxe.Algorithm.Preprocess
 {
-    class ZScoreNormalize
+    class ZScoreNormalize : IAlgorithm
     {
-        public static void Run(RelationAttribute attribute)
+        public string Name => "Z-Score Normalize";
+        public string Description => "Z-Score is the signed fractional number of standard deviations by which the value of an observation or data point is above the mean value of what is being observed or measured.";
+
+        public ObservableCollection<Option> Options { get; private set; }
+        public Relation Relation { get; set; }
+
+        public ZScoreNormalize()
         {
-            //Z-Score Normalize
+            Options = new ObservableCollection<Option>
+            {
+                new Option("Attributes", "Attributes to be Z-Score normalized", typeof(IEnumerable<RelationAttribute>), null),
+            };
+        }
+
+        public void Run()
+        {
+            var attributes = (IEnumerable<RelationAttribute>)Options[0].Value;
+            foreach (var attribute in attributes)
+                Normalize(attribute);
+        }
+
+        private static void Normalize(RelationAttribute attribute)
+        {
+            // Z-Score Normalize
             if (!(attribute.Type is AttributeType.Numeric))
                 return;
             Value sum = 0;
