@@ -166,7 +166,7 @@
                             <lvc:Axis Title="Value" Labels="{Binding HistogramLabels}" />
                         </lvc:CartesianChart.AxisX>
                         <lvc:CartesianChart.AxisY>
-                            <lvc:Axis Title="Number" LabelFormatter="{Binding HistogramValueFormatter}" />
+                            <lvc:Axis Title="Count" />
                         </lvc:CartesianChart.AxisY>
                     </lvc:CartesianChart>
                     <Button Grid.Row="3" Grid.Column="0"

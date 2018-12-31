@@ -5,12 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Pickaxe.Algorithm
+namespace Pickaxe.Algorithm.Preprocess
 {
     class ZScoreNormalize
     {
         public static void Run(RelationAttribute attribute)
-        {//Z-Score规范化,给定数据距离其均值多少个标准差
+        {
+            //Z-Score Normalize
             if (!(attribute.Type is AttributeType.Numeric))
                 return;
             Value sum = 0;
@@ -18,11 +19,11 @@ namespace Pickaxe.Algorithm
             var temp = attribute.Data.Where((x) => !x.IsMissing()).ToList();
             foreach (var v in temp)
                 sum += v;
-            miu = sum / (temp.Count - 1);//求均值
+            miu = sum / (temp.Count - 1); // average
             sum = 0;
             foreach (var v in temp)
                 sum += (v - miu) * (v - miu);
-            sigma = (float)Math.Sqrt(sum / (temp.Count - 1));//求标准差
+            sigma = (float)Math.Sqrt(sum / (temp.Count - 1)); // standard deviation
             for (int i = 0; i < attribute.Data.Count; i++)
             {
                 if (attribute.Data[i].IsMissing())

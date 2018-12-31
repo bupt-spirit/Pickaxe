@@ -90,10 +90,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Algorithm\EquifrequentDiscrete.cs" />
-    <Compile Include="Algorithm\EquidistanceDiscrete.cs" />
-    <Compile Include="Algorithm\MinMaxNormalize.cs" />
-    <Compile Include="Algorithm\ZScoreNormalize.cs" />
+    <Compile Include="Algorithm\Preprocess\EquifrequentDiscrete.cs" />
+    <Compile Include="Algorithm\Preprocess\EquidistanceDiscrete.cs" />
+    <Compile Include="Algorithm\Preprocess\MinMaxNormalize.cs" />
+    <Compile Include="Algorithm\Preprocess\ZScoreNormalize.cs" />
     <Compile Include="Model\RelationAttribute.cs" />
     <Compile Include="Model\TuplesView.cs" />
     <Compile Include="ThirdPart\ObservableDictionary.cs" />

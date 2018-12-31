@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Pickaxe.Algorithm
+namespace Pickaxe.Algorithm.Preprocess
 {
     class MinMaxNormalize
     {

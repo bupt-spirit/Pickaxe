@@ -1,7 +1,7 @@
 ﻿using LiveCharts;
 using LiveCharts.Wpf;
 using Microsoft.Win32;
-using Pickaxe.Algorithm;
+using Pickaxe.Algorithm.Preprocess;
 using Pickaxe.Model;
 using Pickaxe.Utility;
 using Pickaxe.Utility.ListExtension;
@@ -9,9 +9,7 @@ using Pickaxe.View;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows;
@@ -24,7 +22,7 @@ namespace Pickaxe.ViewModel
         private Relation _relation;
         private string _fileName;
         private int _binNumber;
-        
+
         private int _histogramBinNumber;
         private SeriesCollection _histogramSeriesCollection;
         private ObservableCollection<string> _histogramLabels;
@@ -352,7 +350,8 @@ namespace Pickaxe.ViewModel
                                     bins[bin] += 1;
                                 }
                             }
-                            HistogramSeriesCollection.Add(new ColumnSeries {
+                            HistogramSeriesCollection.Add(new ColumnSeries
+                            {
                                 Title = attribute.Name,
                                 Values = new ChartValues<int>(bins),
                             });
@@ -426,7 +425,7 @@ namespace Pickaxe.ViewModel
                     })
                 );
         }
-        
+
         public ICommand ZScoreNormalizeAttribute
         {
             get => _zScoreNormalizeAttribute ?? (
@@ -447,7 +446,7 @@ namespace Pickaxe.ViewModel
                 );
         }
         #endregion
-            
+
         #region Static members
 
         private static readonly string FILE_FILTER = "Pickaxe files (*.pickaxe)|*.pickaxe|All files (*.*)|*.*";
