@@ -42,8 +42,7 @@ namespace Pickaxe.Model
 
         public static Value Parse(string s)
         {
-            float f;
-            if (Single.TryParse(s, out f))
+            if (Single.TryParse(s, out float f))
             {
                 return Value.ToValue(f);
             }

@@ -90,8 +90,9 @@
     <Compile Include="Algorithm\ZScoreNormalize.cs" />
     <Compile Include="Model\RelationAttribute.cs" />
     <Compile Include="Model\TuplesView.cs" />
+    <Compile Include="ThirdPart\ObservableDictionary.cs" />
+    <Compile Include="ThirdPart\ObservableSortedDictionary.cs" />
     <Compile Include="Utility\BindingProxy.cs" />
-    <Compile Include="Utility\ObservableDictionary.cs" />
     <Compile Include="Utility\RelayCommand.cs" />
     <Compile Include="Model\StatisticView.cs" />
     <Compile Include="Utility\ValidationRules.cs" />

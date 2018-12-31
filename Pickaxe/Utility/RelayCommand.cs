@@ -9,8 +9,8 @@ namespace Pickaxe.Utility
 {
     public class RelayCommand : ICommand
     {
-        private Predicate<object> _canExecute;//predicate是托管，对这个对象执行这个函数
-        private Action<object> _execute;
+        private readonly Predicate<object> _canExecute;
+        private readonly Action<object> _execute;
 
         public RelayCommand(Predicate<object> canExecute, Action<object> execute)
         {

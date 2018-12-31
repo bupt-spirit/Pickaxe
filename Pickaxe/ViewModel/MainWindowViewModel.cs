@@ -30,6 +30,7 @@ namespace Pickaxe.ViewModel
         private ICommand _addAttribute;
         private ICommand _insertAttribute;
         private ICommand _removeAttribute;
+        private ICommand _refreshStatisticsView;
 
         #region Temprary
 
@@ -263,6 +264,27 @@ namespace Pickaxe.ViewModel
                 );
         }
 
+        public ICommand RefreshStatisticsView
+        {
+            get => _refreshStatisticsView ?? (
+                _refreshStatisticsView = new RelayCommand(
+                    parameter =>
+                    {
+                        var attribute = (RelationAttribute)parameter;
+                        if (Relation == null)
+                            return false;
+                        if (parameter == null)
+                            return false;
+                        return true;
+                    },
+                    parameter =>
+                    {
+                        var attribute = (RelationAttribute)parameter;
+                        attribute.StatisticView.Refresh();
+                    })
+                );
+        }
+
         #region Temprary
 
         public ICommand EquidistanceDiscreteAttribute
@@ -356,7 +378,6 @@ namespace Pickaxe.ViewModel
         private static readonly IFormatter FORMATTER = new BinaryFormatter();
 
         #endregion
-
 
         #region Methods
 

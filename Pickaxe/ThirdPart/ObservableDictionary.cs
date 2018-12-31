@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2007, Dr. WPF
+/* Copyright (c) 2007, Dr. WPF
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@ using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Runtime.InteropServices;
 
-namespace Pickaxe.Utility
+namespace DrWPF.Windows.Data
 {
     [Serializable]
     public class ObservableDictionary<TKey, TValue> :
@@ -56,12 +56,12 @@ namespace Pickaxe.Utility
 
         public ObservableDictionary()
         {
-            _keyedEntryCollection = new KeyedDictionaryEntryCollection<TKey>();
+            _keyedEntryCollection = new KeyedDictionaryEntryCollection();
         }
 
         public ObservableDictionary(IDictionary<TKey, TValue> dictionary)
         {
-            _keyedEntryCollection = new KeyedDictionaryEntryCollection<TKey>();
+            _keyedEntryCollection = new KeyedDictionaryEntryCollection();
 
             foreach (KeyValuePair<TKey, TValue> entry in dictionary)
                 DoAddEntry((TKey)entry.Key, (TValue)entry.Value);
@@ -69,12 +69,12 @@ namespace Pickaxe.Utility
 
         public ObservableDictionary(IEqualityComparer<TKey> comparer)
         {
-            _keyedEntryCollection = new KeyedDictionaryEntryCollection<TKey>(comparer);
+            _keyedEntryCollection = new KeyedDictionaryEntryCollection(comparer);
         }
 
         public ObservableDictionary(IDictionary<TKey, TValue> dictionary, IEqualityComparer<TKey> comparer)
         {
-            _keyedEntryCollection = new KeyedDictionaryEntryCollection<TKey>(comparer);
+            _keyedEntryCollection = new KeyedDictionaryEntryCollection(comparer);
 
             foreach (KeyValuePair<TKey, TValue> entry in dictionary)
                 DoAddEntry((TKey)entry.Key, (TValue)entry.Value);
@@ -172,7 +172,7 @@ namespace Pickaxe.Utility
 
         public IEnumerator GetEnumerator()
         {
-            return new Enumerator<TKey, TValue>(this, false);
+            return new Enumerator(this, false);
         }
 
         public bool Remove(TKey key)
@@ -183,7 +183,7 @@ namespace Pickaxe.Utility
         public bool TryGetValue(TKey key, out TValue value)
         {
             bool result = _keyedEntryCollection.Contains(key);
-            value = result ? (TValue)_keyedEntryCollection[key].Value : default(TValue);
+            value = result ? (TValue)_keyedEntryCollection[key].Value : default;
             return result;
         }
 
@@ -223,14 +223,12 @@ namespace Pickaxe.Utility
 
         protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs args)
         {
-            if (CollectionChanged != null)
-                CollectionChanged(this, args);
+            CollectionChanged?.Invoke(this, args);
         }
 
         protected virtual void OnPropertyChanged(string name)
         {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(name));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
         protected virtual bool RemoveEntry(TKey key)
@@ -267,8 +265,7 @@ namespace Pickaxe.Utility
             {
                 _version++;
 
-                DictionaryEntry entry;
-                int index = GetIndexAndEntryForKey(key, out entry);
+                int index = GetIndexAndEntryForKey(key, out DictionaryEntry entry);
                 FireEntryAddedNotifications(entry, index);
             }
         }
@@ -284,8 +281,7 @@ namespace Pickaxe.Utility
 
         private bool DoRemoveEntry(TKey key)
         {
-            DictionaryEntry entry;
-            int index = GetIndexAndEntryForKey(key, out entry);
+            int index = GetIndexAndEntryForKey(key, out DictionaryEntry entry);
 
             bool result = RemoveEntry(key);
             if (result)
@@ -300,8 +296,7 @@ namespace Pickaxe.Utility
 
         private void DoSetEntry(TKey key, TValue value)
         {
-            DictionaryEntry entry;
-            int index = GetIndexAndEntryForKey(key, out entry);
+            int index = GetIndexAndEntryForKey(key, out DictionaryEntry entry);
 
             if (SetEntry(key, value))
             {
@@ -432,7 +427,7 @@ namespace Pickaxe.Utility
 
         IDictionaryEnumerator IDictionary.GetEnumerator()
         {
-            return new Enumerator<TKey, TValue>(this, true);
+            return new Enumerator(this, true);
         }
 
         bool IDictionary.IsFixedSize
@@ -549,7 +544,7 @@ namespace Pickaxe.Utility
 
         IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator()
         {
-            return new Enumerator<TKey, TValue>(this, false);
+            return new Enumerator(this, false);
         }
 
         #endregion IEnumerable<KeyValuePair<TKey, TValue>>
@@ -625,7 +620,7 @@ namespace Pickaxe.Utility
 
         #region KeyedDictionaryEntryCollection<TKey>
 
-        protected class KeyedDictionaryEntryCollection<TKey> : KeyedCollection<TKey, DictionaryEntry>
+        protected class KeyedDictionaryEntryCollection : KeyedCollection<TKey, DictionaryEntry>
         {
             #region constructors
 
@@ -662,7 +657,7 @@ namespace Pickaxe.Utility
         #region Enumerator
 
         [Serializable, StructLayout(LayoutKind.Sequential)]
-        public struct Enumerator<TKey, TValue> : IEnumerator<KeyValuePair<TKey, TValue>>, IDisposable, IDictionaryEnumerator, IEnumerator
+        public struct Enumerator : IEnumerator<KeyValuePair<TKey, TValue>>, IDisposable, IDictionaryEnumerator, IEnumerator
         {
             #region constructors
 
@@ -800,10 +795,10 @@ namespace Pickaxe.Utility
             #region fields
 
             private ObservableDictionary<TKey, TValue> _dictionary;
-            private int _version;
+            private readonly int _version;
             private int _index;
             private KeyValuePair<TKey, TValue> _current;
-            private bool _isDictionaryEntryEnumerator;
+            private readonly bool _isDictionaryEntryEnumerator;
 
             #endregion fields
         }
@@ -814,7 +809,7 @@ namespace Pickaxe.Utility
 
         #region fields
 
-        protected KeyedDictionaryEntryCollection<TKey> _keyedEntryCollection;
+        protected KeyedDictionaryEntryCollection _keyedEntryCollection;
 
         private int _countCache = 0;
         private Dictionary<TKey, TValue> _dictionaryCache = new Dictionary<TKey, TValue>();

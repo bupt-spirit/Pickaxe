@@ -7,7 +7,7 @@ namespace Pickaxe.Model
     {
         #region Fields
 
-        private Relation relation;
+        private readonly Relation relation;
 
         #endregion
 
