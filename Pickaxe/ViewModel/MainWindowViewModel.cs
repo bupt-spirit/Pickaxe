@@ -1,6 +1,7 @@
 ﻿using LiveCharts;
 using LiveCharts.Wpf;
 using Microsoft.Win32;
+using Pickaxe.AlgorithmFramework;
 using Pickaxe.AlgorithmStandalone.Preprocess;
 using Pickaxe.Model;
 using Pickaxe.Utility;
@@ -13,7 +14,9 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Markup;
 
 namespace Pickaxe.ViewModel
 {
@@ -27,24 +30,22 @@ namespace Pickaxe.ViewModel
         private SeriesCollection _histogramSeriesCollection;
         private ObservableCollection<string> _histogramLabels;
 
+        private AlgorithmDiscovery _algorithmDiscovery;
+
         private ICommand _newRelation;
         private ICommand _openRelation;
         private ICommand _reloadRelation;
         private ICommand _saveRelation;
         private ICommand _saveAsRelation;
+
         private ICommand _addAttribute;
         private ICommand _insertAttribute;
         private ICommand _removeAttribute;
+
         private ICommand _refreshStatisticsView;
 
-        #region Temprary
+        private ICommand _runAlgorithm;
 
-        private ICommand _equidistanceDiscreteAttribute;
-        private ICommand _equifrequentDiscreteAttribute;
-        private ICommand _minMaxNormalizeAttribute;
-        private ICommand _zScoreNormalizeAttribute;
-
-        #endregion
 
         public int BinNumber
         {
@@ -104,6 +105,11 @@ namespace Pickaxe.ViewModel
                 _histogramLabels = value;
                 OnPropertyChanged("HistogramLabels");
             }
+        }
+
+        public AlgorithmDiscovery AlgorithmDiscovery {
+            get => _algorithmDiscovery ?? (
+                _algorithmDiscovery = new AlgorithmDiscovery());
         }
 
         public MainWindowViewModel()
@@ -360,87 +366,29 @@ namespace Pickaxe.ViewModel
                 );
         }
 
-        #region Temprary
-
-        public ICommand EquidistanceDiscreteAttribute
+        public ICommand RunAlgorithm
         {
-            get => _equidistanceDiscreteAttribute ?? (
-                _equidistanceDiscreteAttribute = new RelayCommand(
+            get => _runAlgorithm ?? (
+                _runAlgorithm = new RelayCommand(
                     parameter =>
                     {
                         if (Relation == null)
                             return false;
                         if (parameter == null)
                             return false;
-                        if (BinNumber == 0)
+                        var parameters = (object[])parameter;
+                        var algorithm = (IAlgorithm)parameters[0];
+                        if (algorithm == null)
                             return false;
-                        return parameter is RelationAttribute;
+                        return true;
                     },
                     parameter =>
                     {
-                        var attribute = parameter as RelationAttribute;
-                        EquidistanceDiscrete.Run(attribute, BinNumber);
-                    })
-                );
-        }
+                        var parameters = (object[])parameter;
+                        var algorithm = (IAlgorithm)parameters[0];
+                        var output = (TextBox)parameters[1];
+                        algorithm.Output = output;
 
-        public ICommand EquifrequentDiscreteAttribute
-        {
-            get => _equifrequentDiscreteAttribute ?? (
-                _equifrequentDiscreteAttribute = new RelayCommand(
-                    parameter =>
-                    {
-                        if (Relation == null)
-                            return false;
-                        if (parameter == null)
-                            return false;
-                        if (BinNumber == 0)
-                            return false;
-                        return parameter is RelationAttribute;
-                    },
-                    parameter =>
-                    {
-                        var attribute = parameter as RelationAttribute;
-                        EquifrequentDiscrete.Run(attribute, BinNumber);
-                    })
-                );
-        }
-
-        public ICommand MinMaxNormalizeAttribute
-        {
-            get => _minMaxNormalizeAttribute ?? (
-                _minMaxNormalizeAttribute = new RelayCommand(
-                    parameter =>
-                    {
-                        if (Relation == null)
-                            return false;
-                        if (parameter == null)
-                            return false;
-                        return parameter is RelationAttribute;
-                    },
-                    parameter =>
-                    {
-                        var attribute = parameter as RelationAttribute;
-                        MinMaxNormalize.Run(attribute);
-                    })
-                );
-        }
-
-        public ICommand ZScoreNormalizeAttribute
-        {
-            get => _zScoreNormalizeAttribute ?? (
-                _zScoreNormalizeAttribute = new RelayCommand(
-                    parameter =>
-                    {
-                        if (Relation == null)
-                            return false;
-                        if (parameter == null)
-                            return false;
-                        return parameter is RelationAttribute;
-                    },
-                    parameter =>
-                    {
-                        var algorithm = new Algorithm.Preprocess.ZScoreNormalize();
                         var dialog = new OptionDialog();
                         dialog.ViewModel.Relation = Relation;
                         dialog.ViewModel.Name = algorithm.Name;
@@ -448,15 +396,12 @@ namespace Pickaxe.ViewModel
                         dialog.ViewModel.Options = algorithm.Options;
                         if (dialog.ShowDialog() == true)
                         {
+                            output.Clear();
                             algorithm.Run();
                         }
-
-                        //var attribute = parameter as RelationAttribute;
-                        //ZScoreNormalize.Run(attribute);
                     })
                 );
         }
-        #endregion
 
         #region Static members
 

@@ -90,6 +90,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AlgorithmFramework\AlgorithmBase.cs" />
+    <Compile Include="AlgorithmFramework\AlgorithmDiscovery.cs" />
     <Compile Include="AlgorithmFramework\IAlgorithm.cs" />
     <Compile Include="AlgorithmFramework\Option.cs" />
     <Compile Include="AlgorithmStandalone\Preprocess\EquifrequentDiscrete.cs" />

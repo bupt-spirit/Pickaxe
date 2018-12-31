@@ -49,7 +49,7 @@
         </Grid.ColumnDefinitions>
         <TextBlock Grid.Row="0" Grid.Column="0"
                    Text="{Binding Description}" 
-                   TextWrapping="WrapWithOverflow" />
+                   TextWrapping="Wrap" />
         <Grid Grid.Row="1" Grid.Column="0"
               x:Name="optionGrid">
             <Grid.ColumnDefinitions>

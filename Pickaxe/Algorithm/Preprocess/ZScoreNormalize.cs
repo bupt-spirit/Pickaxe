@@ -4,16 +4,15 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Markup;
 
 namespace Pickaxe.Algorithm.Preprocess
 {
-    class ZScoreNormalize : IAlgorithm
+    class ZScoreNormalize : AlgorithmBase
     {
-        public string Name => "Z-Score Normalize";
-        public string Description => "Z-Score is the signed fractional number of standard deviations by which the value of an observation or data point is above the mean value of what is being observed or measured.";
-
-        public ObservableCollection<Option> Options { get; private set; }
-        public Relation Relation { get; set; }
+        public override AlgorithmType Type => AlgorithmType.Preprocess;
+        public override string Name => "Z-Score Normalize";
+        public override string Description => "Z-Score is the signed fractional number of standard deviations by which the value of an observation or data point is above the mean value of what is being observed or measured.";
 
         public ZScoreNormalize()
         {
@@ -23,11 +22,15 @@ namespace Pickaxe.Algorithm.Preprocess
             };
         }
 
-        public void Run()
+        public override void Run()
         {
             var attributes = (IEnumerable<RelationAttribute>)Options[0].Value;
             foreach (var attribute in attributes)
+            {
+                WriteOutputLine($"Working on attribute {attribute.Name}...");
                 Normalize(attribute);
+                WriteOutputLine($"Finished working on attribute {attribute.Name}");
+            }
         }
 
         private static void Normalize(RelationAttribute attribute)

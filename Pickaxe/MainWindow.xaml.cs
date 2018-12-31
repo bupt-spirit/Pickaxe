@@ -1,7 +1,4 @@
-﻿using LiveCharts;
-using LiveCharts.Wpf;
-using Pickaxe.Model;
-using Pickaxe.ViewModel;
+﻿using Pickaxe.ViewModel;
 using System.Windows;
 
 namespace Pickaxe

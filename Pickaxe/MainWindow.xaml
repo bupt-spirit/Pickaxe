@@ -8,6 +8,7 @@
         xmlns:view="clr-namespace:Pickaxe.View"
         xmlns:viewmodel="clr-namespace:Pickaxe.ViewModel"
         xmlns:converter="clr-namespace:Pickaxe.Utility.Converter"
+        xmlns:algorithmframework="clr-namespace:Pickaxe.AlgorithmFramework"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         mc:Ignorable="d"
@@ -18,6 +19,7 @@
     <Window.Resources>
         <converter:AttributeTypeStringConverter x:Key="AttributeTypeStringConverter" />
         <converter:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+        <converter:CopyMutliValueConverter x:Key="CopyMutliValueConverter" />
     </Window.Resources>
     <TabControl>
         <TabItem Header="Data Editor">
@@ -55,6 +57,7 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto" />
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
@@ -173,6 +176,34 @@
                             Content="Refresh"
                             Command="{Binding RefreshStatisticsView}"
                             CommandParameter="{Binding SelectedItem, ElementName=attributeDataGrid}" />
+                </Grid>
+                <Grid Grid.Row="0" Grid.Column="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <ComboBox Grid.Row="0" Grid.Column="0"
+                              x:Name="preprocessAlgorithmComboBox"
+                              ItemsSource="{Binding AlgorithmDiscovery.PreprocessAlgorithms}"
+                              DisplayMemberPath="Name"
+                              SelectedIndex="0" />
+                    <Button Grid.Row="1" Grid.Column="0"
+                            Command="{Binding RunAlgorithm}"
+                            Content="Run">
+                        <Button.CommandParameter>
+                            <MultiBinding Converter="{StaticResource CopyMutliValueConverter}">
+                                <Binding Path="SelectedItem" ElementName="preprocessAlgorithmComboBox" />
+                                <Binding ElementName="preprocessAlgorithmTextBox" />
+                            </MultiBinding>
+                        </Button.CommandParameter>
+                    </Button>
+                    <TextBox Grid.Row="2" Grid.Column="0"
+                             x:Name="preprocessAlgorithmTextBox" 
+                             TextWrapping="Wrap" />
                 </Grid>
             </Grid>
         </TabItem>

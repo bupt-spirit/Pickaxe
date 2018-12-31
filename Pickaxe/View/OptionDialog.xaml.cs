@@ -90,7 +90,16 @@ namespace Pickaxe
         private FrameworkElement CreateInputComponent(Option option)
         {
             FrameworkElement element = null;
-            if (option.Type == typeof(int))
+            if (option.Type == typeof(string))
+            {
+                var textBox = new TextBox
+                {
+                    DataContext = option,
+                };
+                BindingOperations.SetBinding(textBox, TextBox.TextProperty, new Binding("Value"));
+                element = textBox;
+            }
+            else if (option.Type == typeof(int))
             {
                 var textBox = new TextBox
                 {
