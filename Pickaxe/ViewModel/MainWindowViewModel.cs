@@ -1,10 +1,13 @@
-﻿using Microsoft.Win32;
+﻿using LiveCharts;
+using LiveCharts.Wpf;
+using Microsoft.Win32;
 using Pickaxe.Algorithm;
 using Pickaxe.Model;
 using Pickaxe.Utility;
 using Pickaxe.Utility.ListExtension;
 using Pickaxe.View;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
@@ -21,6 +24,10 @@ namespace Pickaxe.ViewModel
         private Relation _relation;
         private string _fileName;
         private int _binNumber;
+        
+        private int _histogramBinNumber;
+        private SeriesCollection _histogramSeriesCollection;
+        private ObservableCollection<string> _histogramLabels;
 
         private ICommand _newRelation;
         private ICommand _openRelation;
@@ -71,10 +78,43 @@ namespace Pickaxe.ViewModel
             }
         }
 
+        public int HistogramBinNumber
+        {
+            get => _histogramBinNumber;
+            set
+            {
+                _histogramBinNumber = value;
+                OnPropertyChanged("HistogramBinNumber");
+            }
+        }
+
+        public SeriesCollection HistogramSeriesCollection
+        {
+            get => _histogramSeriesCollection;
+            set
+            {
+                _histogramSeriesCollection = value;
+                OnPropertyChanged("HistogramSeriesCollection");
+            }
+        }
+
+        public ObservableCollection<string> HistogramLabels
+        {
+            get => _histogramLabels;
+            set
+            {
+                _histogramLabels = value;
+                OnPropertyChanged("HistogramLabels");
+            }
+        }
+
         public MainWindowViewModel()
         {
             Relation = new Relation();
             FileName = null;
+            HistogramBinNumber = 10;
+            HistogramSeriesCollection = new SeriesCollection();
+            HistogramLabels = new ObservableCollection<string>();
         }
 
         public ICommand NewRelation
@@ -281,6 +321,42 @@ namespace Pickaxe.ViewModel
                     {
                         var attribute = (RelationAttribute)parameter;
                         attribute.StatisticView.Refresh();
+
+                        // Update Histogram
+                        var max = attribute.StatisticView.Max;
+                        var min = attribute.StatisticView.Min;
+                        HistogramLabels.Clear();
+                        HistogramSeriesCollection.Clear();
+                        if (!max.IsMissing() && !min.IsMissing())
+                        {
+                            var binSize = (max - min) / HistogramBinNumber;
+
+                            for (var i = 0; i < HistogramBinNumber; ++i)
+                                HistogramLabels.Add($"{min + i * binSize} - {min + (i + 1) * binSize}");
+
+                            var bins = new List<int>();
+                            bins.Resize(HistogramBinNumber, 0);
+                            foreach (var value in attribute.Data)
+                            {
+                                if (!value.IsMissing())
+                                {
+                                    int bin;
+                                    if (value != max)
+                                    {
+                                        bin = (int)Math.Floor((value - min) / binSize);
+                                    }
+                                    else
+                                    {
+                                        bin = HistogramBinNumber - 1;
+                                    }
+                                    bins[bin] += 1;
+                                }
+                            }
+                            HistogramSeriesCollection.Add(new ColumnSeries {
+                                Title = attribute.Name,
+                                Values = new ChartValues<int>(bins),
+                            });
+                        }
                     })
                 );
         }

@@ -9,6 +9,7 @@
         xmlns:viewmodel="clr-namespace:Pickaxe.ViewModel"
         xmlns:converter="clr-namespace:Pickaxe.Utility.Converter"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
+        xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         mc:Ignorable="d"
         Title="Pickaxe" Height="450" Width="800">
     <Window.DataContext>
@@ -74,7 +75,8 @@
                               SelectionUnit="FullRow"
                               SelectionMode="Single"
                               VerticalScrollBarVisibility="Auto"
-                              HorizontalScrollBarVisibility="Auto">
+                              HorizontalScrollBarVisibility="Auto"
+                              SelectionChanged="AttributeDataGrid_SelectionChanged">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
                             <DataGridTextColumn Header="Type" Binding="{Binding Type, Converter={StaticResource AttributeTypeStringConverter}}" />
@@ -106,17 +108,22 @@
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="*" />
+                        <RowDefinition Height="auto" />
                     </Grid.RowDefinitions>
-                    <Button Grid.Row="0" Grid.Column="0"
-                            Content="Refresh"
-                            Command="{Binding RefreshStatisticsView}"
-                            CommandParameter="{Binding SelectedItem, ElementName=attributeDataGrid}" />
-                    <GroupBox Grid.Row="1" Grid.Column="0"
+                    <GroupBox Grid.Row="0" Grid.Column="0"
                               Header="Statistic Infomation">
                         <GroupBox.Resources>
                             <system:String x:Key="FallbackString">-</system:String>
                         </GroupBox.Resources>
                         <WrapPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Label VerticalAlignment="Center"
+                                       Content="Value Count:" />
+                                <TextBlock VerticalAlignment="Center"
+                                           Text="{Binding SelectedItem.Data.Count,
+                                                          ElementName=attributeDataGrid,
+                                                          FallbackValue={StaticResource FallbackString}}"/>
+                            </StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <Label VerticalAlignment="Center"
                                        Content="Distinct Count:" />
@@ -148,6 +155,24 @@
                             </StackPanel>
                         </WrapPanel>
                     </GroupBox>
+                    <StackPanel Grid.Row="1" Grid.Column="0"
+                                Orientation="Horizontal">
+                        <Label Content="Bin Number" />
+                        <TextBox VerticalAlignment="Center" Text="{Binding HistogramBinNumber}" />
+                    </StackPanel>
+                    <lvc:CartesianChart Grid.Row="2" Grid.Column="0"
+                                        Series="{Binding HistogramSeriesCollection}">
+                        <lvc:CartesianChart.AxisX>
+                            <lvc:Axis Title="Value" Labels="{Binding HistogramLabels}" />
+                        </lvc:CartesianChart.AxisX>
+                        <lvc:CartesianChart.AxisY>
+                            <lvc:Axis Title="Number" LabelFormatter="{Binding HistogramValueFormatter}" />
+                        </lvc:CartesianChart.AxisY>
+                    </lvc:CartesianChart>
+                    <Button Grid.Row="3" Grid.Column="0"
+                            Content="Refresh"
+                            Command="{Binding RefreshStatisticsView}"
+                            CommandParameter="{Binding SelectedItem, ElementName=attributeDataGrid}" />
                 </Grid>
             </Grid>
         </TabItem>

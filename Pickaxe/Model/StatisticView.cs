@@ -82,7 +82,8 @@ namespace Pickaxe.Model
                     var yKey = (Value)y.Key;
                     return xKey.CompareTo(yKey);
                 }));
-            Refresh();
+            // Not refresh
+            //Refresh();
         }
 
         #endregion
