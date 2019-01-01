@@ -89,7 +89,6 @@
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
                         <RowDefinition Height="*" />
                         <RowDefinition Height="auto" />
                     </Grid.RowDefinitions>
@@ -138,22 +137,34 @@
                             </StackPanel>
                         </WrapPanel>
                     </GroupBox>
-                    <StackPanel Grid.Row="1" Grid.Column="0"
+                    <GroupBox Grid.Row="1" Grid.Column="0"
+                               Header="Histogram">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Row="0" Grid.Column="0"
                                 Orientation="Horizontal">
-                        <Label Content="Bin Number" />
-                        <TextBox VerticalAlignment="Center" Text="{Binding HistogramBinNumber}" />
-                    </StackPanel>
-                    <lvc:CartesianChart Grid.Row="2" Grid.Column="0"
+                                <Label Content="Bin Number" />
+                                <TextBox VerticalAlignment="Center" Text="{Binding HistogramBinNumber}" />
+                            </StackPanel>
+                            <lvc:CartesianChart Grid.Row="1" Grid.Column="0"
                                         Series="{Binding HistogramSeriesCollection}">
-                        <lvc:CartesianChart.AxisX>
-                            <lvc:Axis Title="Value" Labels="{Binding HistogramLabels}" />
-                        </lvc:CartesianChart.AxisX>
-                        <lvc:CartesianChart.AxisY>
-                            <lvc:Axis Title="Count" />
-                        </lvc:CartesianChart.AxisY>
-                    </lvc:CartesianChart>
-                    <Button Grid.Row="3" Grid.Column="0"
-                            Content="Refresh"
+                                <lvc:CartesianChart.AxisX>
+                                    <lvc:Axis Title="Value" Labels="{Binding HistogramLabels}" />
+                                </lvc:CartesianChart.AxisX>
+                                <lvc:CartesianChart.AxisY>
+                                    <lvc:Axis Title="Count" />
+                                </lvc:CartesianChart.AxisY>
+                            </lvc:CartesianChart>
+                        </Grid>
+                    </GroupBox>
+                    <Button Grid.Row="2" Grid.Column="0"
+                            Content="Refresh Statistics and Histogram"
                             Command="{Binding RefreshStatisticsView}"
                             CommandParameter="{Binding SelectedItem, ElementName=attributeDataGrid}" />
                 </Grid>
