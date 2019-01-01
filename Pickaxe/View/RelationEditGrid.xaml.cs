@@ -119,7 +119,7 @@ namespace Pickaxe.View
                 },
                 Value = true,
             };
-            trigger.Setters.Add(new Setter(property, FindResource("MissingValueForgroundBrush")));
+            trigger.Setters.Add(new Setter(property, FindResource("MissingValueForegroundBrush")));
             return trigger;
         }
 

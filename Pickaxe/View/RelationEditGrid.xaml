@@ -23,11 +23,11 @@
         <converter:NominalValueStringConverter x:Key="NominalValueStringConverter" />
         <converter:AttributeTypeStringConverter x:Key="AttributeTypeStringConverter" />
 
-        <SolidColorBrush x:Key="MissingValueForgroundBrush" Color="Brown" />
+        <SolidColorBrush x:Key="MissingValueForegroundBrush" Color="Brown" />
         <Style x:Key="ComboBoxItemBackgroundStyle" TargetType="ComboBoxItem">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding Converter={StaticResource ValueIsMissingConverter}}" Value="True">
-                    <Setter Property="Foreground" Value="{StaticResource MissingValueForgroundBrush}" />
+                    <Setter Property="Foreground" Value="{StaticResource MissingValueForegroundBrush}" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
