@@ -4,11 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Pickaxe"
-        xmlns:model="clr-namespace:Pickaxe.Model"
         xmlns:view="clr-namespace:Pickaxe.View"
         xmlns:viewmodel="clr-namespace:Pickaxe.ViewModel"
         xmlns:converter="clr-namespace:Pickaxe.Utility.Converter"
-        xmlns:algorithmframework="clr-namespace:Pickaxe.AlgorithmFramework"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         mc:Ignorable="d"
@@ -19,7 +17,7 @@
     <Window.Resources>
         <converter:AttributeTypeStringConverter x:Key="AttributeTypeStringConverter" />
         <converter:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
-        <converter:CopyMutliValueConverter x:Key="CopyMutliValueConverter" />
+        <converter:CopyMutliValueConverter x:Key="CopyMultiValueConverter" />
     </Window.Resources>
     <TabControl>
         <TabItem Header="Preprocess">
@@ -84,13 +82,6 @@
                         <Button Content="Insert" Command="{Binding InsertAttribute}" CommandParameter="{Binding SelectedIndex, ElementName=attributeDataGrid}" />
                         <Button Content="Remove" Command="{Binding RemoveAttribute}" CommandParameter="{Binding SelectedIndex, ElementName=attributeDataGrid}" />
                     </WrapPanel>
-                    <!--<StackPanel Grid.Row="2" Grid.Column="0">
-                        <TextBox Text="{Binding BinNumber}" />
-                        <Button Content="Equidistance Discrete" Command="{Binding EquidistanceDiscreteAttribute}" CommandParameter="{Binding SelectedItem, ElementName=attributeDataGrid}" />
-                        <Button Content="Equifrequent Discrete" Command="{Binding EquifrequentDiscreteAttribute}" CommandParameter="{Binding SelectedItem, ElementName=attributeDataGrid}"/>
-                        <Button Content="MinMax Normalize" Command="{Binding MinMaxNormalizeAttribute}" CommandParameter="{Binding SelectedItem, ElementName=attributeDataGrid}"/>
-                        <Button Content="ZScore Normalize" Command="{Binding ZScoreNormalizeAttribute}" CommandParameter="{Binding SelectedItem, ElementName=attributeDataGrid}"/>
-                    </StackPanel>-->
                 </Grid>
                 <Grid Grid.Row="1" Grid.Column="1">
                     <Grid.ColumnDefinitions>
@@ -103,7 +94,7 @@
                         <RowDefinition Height="auto" />
                     </Grid.RowDefinitions>
                     <GroupBox Grid.Row="0" Grid.Column="0"
-                              Header="Statistic Infomation">
+                              Header="Statistic Information">
                         <GroupBox.Resources>
                             <system:String x:Key="FallbackString">-</system:String>
                         </GroupBox.Resources>
@@ -184,7 +175,7 @@
                             Command="{Binding RunAlgorithm}"
                             Content="Run">
                         <Button.CommandParameter>
-                            <MultiBinding Converter="{StaticResource CopyMutliValueConverter}">
+                            <MultiBinding Converter="{StaticResource CopyMultiValueConverter}">
                                 <Binding Path="SelectedItem" ElementName="preprocessAlgorithmComboBox" />
                                 <Binding ElementName="preprocessAlgorithmTextBox" />
                             </MultiBinding>
@@ -228,7 +219,7 @@
                             Command="{Binding RunAlgorithm}"
                             Content="Run">
                     <Button.CommandParameter>
-                        <MultiBinding Converter="{StaticResource CopyMutliValueConverter}">
+                        <MultiBinding Converter="{StaticResource CopyMultiValueConverter}">
                             <Binding Path="SelectedItem" ElementName="classifyAlgorithmComboBox" />
                             <Binding ElementName="classifyAlgorithmTextBox" />
                         </MultiBinding>
@@ -264,7 +255,7 @@
                             Command="{Binding RunAlgorithm}"
                             Content="Run">
                     <Button.CommandParameter>
-                        <MultiBinding Converter="{StaticResource CopyMutliValueConverter}">
+                        <MultiBinding Converter="{StaticResource CopyMultiValueConverter}">
                             <Binding Path="SelectedItem" ElementName="clusterAlgorithmComboBox" />
                             <Binding ElementName="clusterAlgorithmTextBox" />
                         </MultiBinding>
@@ -300,7 +291,7 @@
                             Command="{Binding RunAlgorithm}"
                             Content="Run">
                     <Button.CommandParameter>
-                        <MultiBinding Converter="{StaticResource CopyMutliValueConverter}">
+                        <MultiBinding Converter="{StaticResource CopyMultiValueConverter}">
                             <Binding Path="SelectedItem" ElementName="associateAlgorithmComboBox" />
                             <Binding ElementName="associateAlgorithmTextBox" />
                         </MultiBinding>
