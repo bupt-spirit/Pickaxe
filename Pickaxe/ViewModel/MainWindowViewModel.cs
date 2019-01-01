@@ -44,6 +44,9 @@ namespace Pickaxe.ViewModel
 
         private ICommand _runAlgorithm;
 
+        private ObservableCollection<AlgorithmHistoryViewModel> _clusterAlgorithmHistoryCollection;
+        private ObservableCollection<AlgorithmHistoryViewModel> _classifyAlgorithmHistoryCollection;
+        private ObservableCollection<AlgorithmHistoryViewModel> _associateAlgorithmHistoryCollection;
 
         public int BinNumber
         {
@@ -106,8 +109,42 @@ namespace Pickaxe.ViewModel
         }
 
         public AlgorithmDiscovery AlgorithmDiscovery {
-            get => _algorithmDiscovery ?? (
-                _algorithmDiscovery = new AlgorithmDiscovery());
+            get => _algorithmDiscovery;
+            set
+            {
+                _algorithmDiscovery = value;
+                OnPropertyChanged("AlgorithmDiscovery");
+            }
+        }
+
+        public ObservableCollection<AlgorithmHistoryViewModel> ClusterAlgorithmHistoryCollection
+        {
+            get => _clusterAlgorithmHistoryCollection;
+            set
+            {
+                _clusterAlgorithmHistoryCollection = value;
+                OnPropertyChanged("ClusterAlgorithmHistoryCollection");
+            }
+        }
+
+        public ObservableCollection<AlgorithmHistoryViewModel> ClassifyAlgorithmHistoryCollection
+        {
+            get => _classifyAlgorithmHistoryCollection;
+            set
+            {
+                _classifyAlgorithmHistoryCollection = value;
+                OnPropertyChanged("ClusterAlgorithmHistoryCollection");
+            }
+        }
+
+        public ObservableCollection<AlgorithmHistoryViewModel> AssociateAlgorithmHistoryCollection
+        {
+            get => _associateAlgorithmHistoryCollection;
+            set
+            {
+                _associateAlgorithmHistoryCollection = value;
+                OnPropertyChanged("ClusterAlgorithmHistoryCollection");
+            }
         }
 
         public MainWindowViewModel()
@@ -117,6 +154,10 @@ namespace Pickaxe.ViewModel
             HistogramBinNumber = 10;
             HistogramSeriesCollection = new SeriesCollection();
             HistogramLabels = new ObservableCollection<string>();
+            AlgorithmDiscovery = new AlgorithmDiscovery();
+            ClusterAlgorithmHistoryCollection = new ObservableCollection<AlgorithmHistoryViewModel>();
+            ClassifyAlgorithmHistoryCollection = new ObservableCollection<AlgorithmHistoryViewModel>();
+            AssociateAlgorithmHistoryCollection = new ObservableCollection<AlgorithmHistoryViewModel>();
         }
 
         public ICommand NewRelation
@@ -396,6 +437,27 @@ namespace Pickaxe.ViewModel
                         {
                             output.Clear();
                             algorithm.Run();
+                            // Add history
+                            var history = new AlgorithmHistoryViewModel
+                            {
+                                Name = algorithm.Name,
+                                DateTime = DateTime.Now,
+                                OutputText = output.Text,
+                            };
+                            switch (algorithm.Type)
+                            {
+                                case AlgorithmType.Cluster:
+                                    ClusterAlgorithmHistoryCollection.Add(history);
+                                    break;
+                                case AlgorithmType.Classify:
+                                    ClassifyAlgorithmHistoryCollection.Add(history);
+                                    break;
+                                case AlgorithmType.Associate:
+                                    AssociateAlgorithmHistoryCollection.Add(history);
+                                    break;
+                                default:
+                                    break; // Do not add history
+                            }
                         }
                     })
                 );
