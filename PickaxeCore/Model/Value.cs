@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace Pickaxe.Model
 {
@@ -7,24 +8,24 @@ namespace Pickaxe.Model
     {
         public static Value MISSING = (Value)float.NaN;
 
-        private float inner;
+        private float _inner;
 
-        public static implicit operator Value(float f) => new Value { inner = f };
+        public static implicit operator Value(float f) => new Value { _inner = f };
 
         public static implicit operator float(Value v)
         {
             if (v.IsMissing())
                 throw new InvalidCastException("cast missing value");
-            return v.inner;
+            return v._inner;
         }
 
         public static Value ToValue<T>(T from) => (Value)Convert.ToSingle(from);
 
-        public int CompareTo(Value other) => this.inner.CompareTo(other.inner);
+        public int CompareTo(Value other) => this._inner.CompareTo(other._inner);
 
         public bool Equals(Value other)
         {
-            return (this.IsMissing() && other.IsMissing()) || this.inner.Equals(other.inner);
+            return (this.IsMissing() && other.IsMissing()) || this._inner.Equals(other._inner);
         }
 
         public override string ToString()
@@ -32,24 +33,17 @@ namespace Pickaxe.Model
             if (this.IsMissing())
                 return "MISSING";
             else
-                return this.inner.ToString();
+                return this._inner.ToString(CultureInfo.CurrentCulture);
         }
 
         public bool IsMissing()
         {
-            return float.IsNaN(this.inner);
+            return float.IsNaN(this._inner);
         }
 
         public static Value Parse(string s)
         {
-            if (Single.TryParse(s, out float f))
-            {
-                return Value.ToValue(f);
-            }
-            else
-            {
-                return Value.MISSING;
-            }
+            return float.TryParse(s, out var f) ? Value.ToValue(f) : Value.MISSING;
         }
     }
 }

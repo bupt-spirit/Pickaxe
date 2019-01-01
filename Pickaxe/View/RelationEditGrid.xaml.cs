@@ -126,12 +126,12 @@ namespace Pickaxe.View
         private DataTemplate ColumnCellDataTemplate(AttributeType type, int attributeIndex)
         {
             var template = new DataTemplate(typeof(Value));
-            FrameworkElementFactory textBlockFactory = new FrameworkElementFactory(typeof(TextBlock));
+            var textBlockFactory = new FrameworkElementFactory(typeof(TextBlock));
             textBlockFactory.SetBinding(TextBlock.TextProperty, new Binding($"[{attributeIndex}]")
             {
                 Converter = new ValueStringConverter(type)
             });
-            Style style = new Style();
+            var style = new Style();
             style.Triggers.Add(ValueMissingForegroundTrigger(TextBlock.ForegroundProperty, attributeIndex));
             textBlockFactory.SetValue(TextBlock.StyleProperty, style);
             //textBlockFactory.SetValue(TextBlock.ContextMenuProperty, this.FindResource("DataGridCellContextMenu"));
@@ -142,7 +142,7 @@ namespace Pickaxe.View
         private DataTemplate ComboBoxItemDataTemplate(AttributeType type)
         {
             var template = new DataTemplate(typeof(Value));
-            FrameworkElementFactory textBlockFactory = new FrameworkElementFactory(typeof(TextBlock));
+            var textBlockFactory = new FrameworkElementFactory(typeof(TextBlock));
             var binding = new Binding
             {
                 Converter = new ValueStringConverter(type)
@@ -160,7 +160,7 @@ namespace Pickaxe.View
             };
             if (type is AttributeType.Binary binaryAttribute)
             {
-                FrameworkElementFactory comboBox = new FrameworkElementFactory(typeof(ComboBox));
+                var comboBox = new FrameworkElementFactory(typeof(ComboBox));
                 comboBox.SetValue(ComboBox.ItemsSourceProperty, new List<Value> { Value.ToValue(false), Value.ToValue(true), Value.MISSING });
                 comboBox.SetBinding(ComboBox.SelectedItemProperty, new Binding($"[{attributeIndex}]"));
                 var itemTemplate = ComboBoxItemDataTemplate(type);
@@ -171,7 +171,7 @@ namespace Pickaxe.View
             }
             else if (type is AttributeType.Nominal nominalAttribute)
             {
-                FrameworkElementFactory comboBox = new FrameworkElementFactory(typeof(ComboBox));
+                var comboBox = new FrameworkElementFactory(typeof(ComboBox));
                 comboBox.SetValue(ComboBox.ItemsSourceProperty, nominalAttribute.ValidValues);
                 comboBox.SetBinding(ComboBox.SelectedItemProperty, new Binding($"[{attributeIndex}]"));
                 var itemTemplate = ComboBoxItemDataTemplate(type);
@@ -182,7 +182,7 @@ namespace Pickaxe.View
             }
             else if (type is AttributeType.Numeric numericAttribute)
             {
-                FrameworkElementFactory textBox = new FrameworkElementFactory(typeof(TextBox));
+                var textBox = new FrameworkElementFactory(typeof(TextBox));
                 textBox.SetBinding(TextBox.TextProperty, new Binding($"[{attributeIndex}]")
                 {
                     Converter = (NominalValueStringConverter)this.FindResource("NominalValueStringConverter"),
@@ -191,7 +191,7 @@ namespace Pickaxe.View
             }
             else
             {
-                throw new Exception(); // imposible state
+                throw new Exception(); // impossible state
             }
             template.VisualTree.AddHandler(FrameworkElement.PreviewMouseRightButtonDownEvent,
                     new MouseButtonEventHandler(DataGridCell_PreviewMouseRightButtonDown));

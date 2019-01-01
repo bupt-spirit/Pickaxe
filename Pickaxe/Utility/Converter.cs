@@ -50,7 +50,7 @@ namespace Pickaxe.Utility.Converter
         {
             if (value is string inString)
             {
-                if (int.TryParse(inString, out int inInt))
+                if (int.TryParse(inString, out var inInt))
                     return inInt;
                 else
                     return DefaultValue;
@@ -83,7 +83,7 @@ namespace Pickaxe.Utility.Converter
         {
             if (value is string inString)
             {
-                if (float.TryParse(inString, out float inFloat))
+                if (float.TryParse(inString, out var inFloat))
                     return inFloat;
                 else
                     return DefaultValue;

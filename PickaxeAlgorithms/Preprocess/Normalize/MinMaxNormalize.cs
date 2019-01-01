@@ -1,6 +1,5 @@
 ﻿using Pickaxe.AlgorithmFramework;
 using Pickaxe.Model;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
@@ -35,7 +34,7 @@ namespace Pickaxe.Algorithms.Preprocess.Normalize
         {
             if (!(attribute.Type is AttributeType.Numeric))
                 return;
-            Value max = Single.NegativeInfinity, min = Single.PositiveInfinity;
+            Value max = float.NegativeInfinity, min = float.PositiveInfinity;
             foreach (var v in attribute.Data)
             {
                 if (v.IsMissing())
@@ -45,9 +44,9 @@ namespace Pickaxe.Algorithms.Preprocess.Normalize
                 if (v < min)
                     min = v;
             }
-            if (Single.IsNegativeInfinity(max) || Single.IsPositiveInfinity(min))
+            if (float.IsNegativeInfinity(max) || float.IsPositiveInfinity(min))
                 return;
-            for (int i = 0; i < attribute.Data.Count; i++)
+            for (var i = 0; i < attribute.Data.Count; i++)
             {
                 if (attribute.Data[i].IsMissing())
                     continue;

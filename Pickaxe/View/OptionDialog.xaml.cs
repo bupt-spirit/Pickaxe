@@ -164,7 +164,7 @@ namespace Pickaxe
             var option = (Option)listView.Tag;
             if (option.Type != typeof(IEnumerable<RelationAttribute>))
                 throw new NotSupportedException();
-            IEnumerable<RelationAttribute> relations = listView.SelectedItems.Cast<RelationAttribute>();
+            var relations = listView.SelectedItems.Cast<RelationAttribute>();
             option.Value = relations;
         }
 

@@ -34,9 +34,9 @@ namespace Pickaxe.Model
 
         #region Static functions
 
-        public static bool CheckRelationAttributes(IEnumerable<RelationAttribute> collection)
+        private static bool CheckRelationAttributes(IEnumerable<RelationAttribute> collection)
         {
-            int tupleCount = -1;
+            var tupleCount = -1;
             foreach (var attribute in collection)
             {
                 if (tupleCount == -1)
@@ -55,7 +55,7 @@ namespace Pickaxe.Model
 
         #region Constructors
 
-        public Relation() : base()
+        public Relation()
         {
         }
 
@@ -63,7 +63,7 @@ namespace Pickaxe.Model
         {
             if (!CheckRelationAttributes(collection))
             {
-                Clear(); // prevent recovery into inconsist state
+                Clear(); // prevent recovery into inconsistent state
                 throw new ArgumentException("Invalid relation attributes");
             }
         }
@@ -116,7 +116,6 @@ namespace Pickaxe.Model
         protected override void RemoveItem(int index)
         {
             this[index].DataCollectionChanged -= Attribute_DataCollectionChanged;
-            RelationAttribute removed = this[index];
             base.RemoveItem(index);
             for (var i = index; i < Count; ++i)
             {
@@ -136,7 +135,7 @@ namespace Pickaxe.Model
             {
                 throw new ArgumentException("Invalid relation attributes");
             }
-            var oldAttribute = this[index];
+
             base.SetItem(index, item);
             foreach (var tupleView in TuplesView)
             {

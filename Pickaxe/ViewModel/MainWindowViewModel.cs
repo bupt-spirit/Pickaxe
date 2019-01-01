@@ -182,7 +182,7 @@ namespace Pickaxe.ViewModel
                     {
                         var openFileDialog = new OpenFileDialog
                         {
-                            Filter = FILE_FILTER
+                            Filter = FileFilter
                         };
                         if (openFileDialog.ShowDialog() == true)
                         {
@@ -190,7 +190,7 @@ namespace Pickaxe.ViewModel
                             {
                                 try
                                 {
-                                    var obj = FORMATTER.Deserialize(stream);
+                                    var obj = Formatter.Deserialize(stream);
                                     if (obj is Relation relation)
                                     {
                                         relation.RebindInternalEvents();
@@ -224,7 +224,7 @@ namespace Pickaxe.ViewModel
                     {
                         using (var stream = new FileStream(FileName, FileMode.Open, FileAccess.Read))
                         {
-                            var obj = FORMATTER.Deserialize(stream);
+                            var obj = Formatter.Deserialize(stream);
                             if (obj is Relation relation)
                             {
                                 relation.RebindInternalEvents();
@@ -250,7 +250,7 @@ namespace Pickaxe.ViewModel
                         {
                             var saveFileDialog = new SaveFileDialog
                             {
-                                Filter = FILE_FILTER
+                                Filter = FileFilter
                             };
                             if (saveFileDialog.ShowDialog() == true)
                                 FileName = saveFileDialog.FileName;
@@ -259,7 +259,7 @@ namespace Pickaxe.ViewModel
                         }
                         using (var stream = new FileStream(FileName, FileMode.Create, FileAccess.Write))
                         {
-                            FORMATTER.Serialize(stream, Relation);
+                            Formatter.Serialize(stream, Relation);
                         }
                     })
                 );
@@ -274,14 +274,14 @@ namespace Pickaxe.ViewModel
                     {
                         var saveFileDialog = new SaveFileDialog
                         {
-                            Filter = FILE_FILTER
+                            Filter = FileFilter
                         };
                         if (saveFileDialog.ShowDialog() == true)
                         {
                             FileName = saveFileDialog.FileName;
                             using (var stream = new FileStream(FileName, FileMode.Create, FileAccess.Write))
                             {
-                                FORMATTER.Serialize(stream, Relation);
+                                Formatter.Serialize(stream, Relation);
                             }
                         }
                     })
@@ -465,8 +465,8 @@ namespace Pickaxe.ViewModel
 
         #region Static members
 
-        private static readonly string FILE_FILTER = "Pickaxe files (*.pickaxe)|*.pickaxe|All files (*.*)|*.*";
-        private static readonly IFormatter FORMATTER = new BinaryFormatter();
+        private const string FileFilter = "Pickaxe files (*.pickaxe)|*.pickaxe|All files (*.*)|*.*";
+        private static readonly IFormatter Formatter = new BinaryFormatter();
 
         #endregion
 

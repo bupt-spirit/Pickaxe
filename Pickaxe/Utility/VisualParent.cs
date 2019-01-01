@@ -12,7 +12,7 @@ namespace Pickaxe.Utility
     {
         public static DependencyObject GetVisualParentByType(DependencyObject startObject, Type type)
         {
-            DependencyObject parent = startObject;
+            var parent = startObject;
             while (parent != null)
             {
                 if (type.IsInstanceOfType(parent))

@@ -73,11 +73,22 @@ namespace Pickaxe.AlgorithmFramework
 
         public AlgorithmDiscovery()
         {
-            List<Assembly> allAssemblies = new List<Assembly>();
-            string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
-            foreach (string dll in Directory.GetFiles(path, "*.dll"))
-                allAssemblies.Add(Assembly.LoadFile(dll));
+            var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            foreach (var dll in Directory.GetFiles(path, "*.dll"))
+            {
+                try
+                {
+                    var loadedAssembly = Assembly.LoadFile(dll);
+                }
+                catch (FileLoadException)
+                {
+                    // The Assembly has already been loaded
+                }
+                catch (BadImageFormatException)
+                {
+                    // Ignore Bad Image
+                }
+            }
         }
 
         #endregion

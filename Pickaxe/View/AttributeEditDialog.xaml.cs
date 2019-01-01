@@ -21,10 +21,7 @@ namespace Pickaxe.View
     /// </summary>
     public partial class AttributeEditDialog : Window
     {
-        public AttributeEditDialogViewModel ViewModel
-        {
-            get => (AttributeEditDialogViewModel)DataContext;
-        }
+        public AttributeEditDialogViewModel ViewModel => (AttributeEditDialogViewModel)DataContext;
 
         public AttributeEditDialog()
         {
@@ -61,7 +58,7 @@ namespace Pickaxe.View
         }
 
         // Validate all dependency objects in a window
-        bool IsValid(DependencyObject node)
+        private static bool IsValid(DependencyObject node)
         {
             // Check if dependency object was passed
             if (node != null)
@@ -73,19 +70,19 @@ namespace Pickaxe.View
                 {
                     // If the dependency object is invalid, and it can receive the focus,
                     // set the focus
-                    if (node is IInputElement) Keyboard.Focus((IInputElement)node);
+                    if (node is IInputElement element) Keyboard.Focus(element);
                     return false;
                 }
             }
 
             // If this dependency object is valid, check all child dependency objects
-            foreach (object subnode in LogicalTreeHelper.GetChildren(node))
+            foreach (object subNode in LogicalTreeHelper.GetChildren(node))
             {
-                if (subnode is DependencyObject)
+                if (subNode is DependencyObject)
                 {
                     // If a child dependency object is invalid, return false immediately,
                     // otherwise keep checking
-                    if (IsValid((DependencyObject)subnode) == false) return false;
+                    if (IsValid((DependencyObject)subNode) == false) return false;
                 }
             }
 
@@ -95,11 +92,7 @@ namespace Pickaxe.View
 
         private void OkButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!IsValid(this))
-            {
-                return;
-            }
-            else
+            if (IsValid(this))
             {
                 DialogResult = true;
             }

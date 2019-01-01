@@ -46,12 +46,12 @@ namespace Pickaxe.Algorithms.Preprocess.Discrete
                 .Where(x => !x.v.IsMissing()).OrderBy((x) => x.v).ToList();
             if (temp.Count == 0)
                 return;
-            int binSize = (int)Math.Ceiling(((temp.Count - 1) / (double)binNumber));
-            List<int> binCount = new List<int>();
+            var binSize = (int)Math.Ceiling((temp.Count - 1) / (double)binNumber);
+            var binCount = new List<int>();
             binCount.Resize(binNumber, 0); // Tracing the count in every bin
-            for (int k = 0; k < temp.Count; k++)
+            for (var k = 0; k < temp.Count; k++)
             {
-                int j = (int)Math.Floor(k / (double)binNumber);
+                var j = (int)Math.Floor(k / (double)binNumber);
                 while (j < binNumber)
                 {
                     if (binCount[j] < binSize)

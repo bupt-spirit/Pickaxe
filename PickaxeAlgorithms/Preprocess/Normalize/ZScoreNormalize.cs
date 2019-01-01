@@ -48,7 +48,7 @@ namespace Pickaxe.Algorithms.Preprocess.Normalize
             foreach (var v in temp)
                 sum += (v - miu) * (v - miu);
             sigma = (float)Math.Sqrt(sum / (temp.Count - 1)); // standard deviation
-            for (int i = 0; i < attribute.Data.Count; i++)
+            for (var i = 0; i < attribute.Data.Count; i++)
             {
                 if (attribute.Data[i].IsMissing())
                     continue;

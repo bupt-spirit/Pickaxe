@@ -19,7 +19,7 @@
     <Window.Resources>
         <converter:AttributeTypeStringConverter x:Key="AttributeTypeStringConverter" />
 
-        <DataTemplate x:Key="ComboxBoxItemTemplate">
+        <DataTemplate x:Key="ComboBoxItemTemplate">
             <TextBlock Text="{Binding Converter={StaticResource AttributeTypeStringConverter}}"/>
         </DataTemplate>
 
@@ -93,9 +93,9 @@
                   x:Name="comboBox"
                   SelectionChanged="ComboBox_SelectionChanged">
             <ComboBoxItem x:Name="defaultComboBoxItem"
-                          Content="{Binding NumericType}" ContentTemplate="{StaticResource ComboxBoxItemTemplate}" />
-            <ComboBoxItem Content="{Binding BinaryType}" ContentTemplate="{StaticResource ComboxBoxItemTemplate}" />
-            <ComboBoxItem Content="{Binding NominalType}" ContentTemplate="{StaticResource ComboxBoxItemTemplate}" />
+                          Content="{Binding NumericType}" ContentTemplate="{StaticResource ComboBoxItemTemplate}" />
+            <ComboBoxItem Content="{Binding BinaryType}" ContentTemplate="{StaticResource ComboBoxItemTemplate}" />
+            <ComboBoxItem Content="{Binding NominalType}" ContentTemplate="{StaticResource ComboBoxItemTemplate}" />
         </ComboBox>
         <Label Grid.Row="2" Grid.Column="0" Content="Labels" />
         <Grid Grid.Row="2" Grid.Column="1"
