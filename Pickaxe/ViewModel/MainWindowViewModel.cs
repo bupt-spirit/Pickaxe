@@ -108,7 +108,8 @@ namespace Pickaxe.ViewModel
             }
         }
 
-        public AlgorithmDiscovery AlgorithmDiscovery {
+        public AlgorithmDiscovery AlgorithmDiscovery
+        {
             get => _algorithmDiscovery;
             set
             {
@@ -315,7 +316,14 @@ namespace Pickaxe.ViewModel
                     {
                         if (Relation == null)
                             return false;
-                        return parameter is int;
+                        if (parameter is int inInt)
+                        {
+                            return inInt != -1;
+                        }
+                        else
+                        {
+                            return false;
+                        }
                     },
                     parameter =>
                     {
