@@ -1,5 +1,4 @@
 ﻿using Microsoft.VisualBasic.FileIO;
-using Pickaxe.Model;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -56,11 +55,11 @@ namespace Pickaxe.Model
                     string[] fields = parser.ReadFields();
                     for (int i = 0; i < relation.Count; ++i)
                     {
-                        try
+                        if (float.TryParse(fields[i], out var inFloat))
                         {
-                            tuplesView[tupleIndex][i] = Value.ToValue(float.Parse(fields[i]));
+                            tuplesView[tupleIndex][i] = inFloat;
                         }
-                        catch (FormatException)
+                        else
                         {
                             tuplesView[tupleIndex][i] = Value.MISSING;
                         }
