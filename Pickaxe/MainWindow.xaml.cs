@@ -1,6 +1,4 @@
-﻿using OxyPlot;
-using OxyPlot.Axes;
-using OxyPlot.Series;
+﻿using OxyPlot.Series;
 using Pickaxe.Model;
 using Pickaxe.Utility;
 using Pickaxe.ViewModel;
@@ -25,7 +23,8 @@ namespace Pickaxe
             get => (MainWindowViewModel)DataContext;
         }
 
-        public VisualizeSeries VisualizeSeries {
+        public VisualizeSeries VisualizeSeries
+        {
             get => _visualizeSeries ?? (_visualizeSeries = new VisualizeSeries());
         }
 
@@ -65,7 +64,8 @@ namespace Pickaxe
         private RelationAttribute _yAttribute;
         private RelationAttribute _colorAttribute;
 
-        public float Jitter {
+        public float Jitter
+        {
             get => _jitter;
             set
             {
@@ -74,7 +74,8 @@ namespace Pickaxe
                 OnPropertyChanged("Points");
             }
         }
-        public RelationAttribute XAttribute {
+        public RelationAttribute XAttribute
+        {
             get => _xAttribute;
             set
             {
@@ -83,7 +84,8 @@ namespace Pickaxe
                 OnPropertyChanged("Points");
             }
         }
-        public RelationAttribute YAttribute {
+        public RelationAttribute YAttribute
+        {
             get => _yAttribute;
             set
             {
@@ -92,7 +94,8 @@ namespace Pickaxe
                 OnPropertyChanged("Points");
             }
         }
-        public RelationAttribute ColorAttribute {
+        public RelationAttribute ColorAttribute
+        {
             get => _colorAttribute;
             set
             {
@@ -109,10 +112,13 @@ namespace Pickaxe
                 var xCount = XAttribute == null ? 0 : XAttribute.Data.Count;
                 var yCount = YAttribute == null ? 0 : YAttribute.Data.Count;
                 if (xCount == 0 && yCount == 0)
+                {
                     return Enumerable.Empty<ScatterPoint>();
+                }
                 else
                 {
                     var count = xCount > yCount ? xCount : yCount;
+
                     var r = new Random(0);
 
                     if (XAttribute != null)
@@ -122,41 +128,46 @@ namespace Pickaxe
                     if (ColorAttribute != null)
                         ColorAttribute.StatisticView.Refresh();
 
-                    var xRange = GetAttributeDataRange(XAttribute) * Jitter;
-                    var yRange = GetAttributeDataRange(YAttribute) * Jitter;
-                    var colorRange = GetAttributeDataRange(ColorAttribute);
-                    return Enumerable.Range(0, count)
-                        .Select((index) => {
-                            return new ScatterPoint(
-                                XAttribute != null ? 
-                                    XAttribute.Data[index] + (r.NextDouble() - 0.5) * xRange :
-                                    0,
-                                YAttribute != null ?
-                                    YAttribute.Data[index] + (r.NextDouble() - 0.5) * yRange :
-                                    0,
-                                double.NaN,
-                                ConvertValueToColor(index, colorRange)
-                            );
-                        });
+                    var xs = JitteredAttributeData(count, XAttribute, r);
+                    var ys = JitteredAttributeData(count, YAttribute, r);
+                    var colors = NormalizedAttributeData(count, ColorAttribute);
+                    return Enumerable
+                        .Zip(xs, ys, (x, y) => (x, y))
+                        .Zip(colors, (xy, color) => (xy, color))
+                        .Select(tuple => new ScatterPoint(
+                            tuple.xy.x,
+                            tuple.xy.y,
+                            double.NaN,
+                            tuple.color
+                        ));
                 }
             }
         }
 
-        public static float GetAttributeDataRange(RelationAttribute attribute)
+        public IEnumerable<double> JitteredAttributeData(int count, RelationAttribute attribute, Random r)
         {
-            if (attribute == null)
-                return float.NaN;
-            if (attribute.StatisticView.Max.IsMissing())
-                return float.NaN;
-            else
-                return attribute.StatisticView.Max - attribute.StatisticView.Min;
+            if (attribute == null) return Enumerable.Repeat(0.0, count);
+            return attribute.Data.Select((data) =>
+            {
+                if (data.IsMissing()) return 0;
+                var randomFactor = r.NextDouble() - 0.5;
+                var result = data * (randomFactor * Jitter + 1);
+                return result;
+            });
         }
 
-        public double ConvertValueToColor(int index, float range)
+        public IEnumerable<double> NormalizedAttributeData(int count, RelationAttribute attribute)
         {
-            if (ColorAttribute == null) return 0;
-            if (float.IsNaN(ColorAttribute.StatisticView.Min)) return 0;
-            return (ColorAttribute.Data[index] - ColorAttribute.StatisticView.Min) / range;
+            if (attribute == null) return Enumerable.Repeat(0.0, count);
+            var min = attribute.StatisticView.Min;
+            var max = attribute.StatisticView.Max;
+            if (max.IsMissing() || min.IsMissing()) return Enumerable.Repeat(0.0, count);
+            var range = max - min;
+            return attribute.Data.Select((data) =>
+            {
+                if (data.IsMissing()) return 0.0;
+                return (data - min) / range;
+            });
         }
 
         public ScatterPoint GetScatterPoint(int n)
