@@ -9,8 +9,10 @@
         xmlns:converter="clr-namespace:Pickaxe.Utility.Converter"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+        xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
         mc:Ignorable="d"
-        Title="Pickaxe" Height="450" Width="800">
+        Title="Pickaxe" Height="450" Width="800"
+        x:Name="mainWindow">
     <Window.DataContext>
         <viewmodel:MainWindowViewModel />
     </Window.DataContext>
@@ -318,6 +320,100 @@
                              TextWrapping="Wrap" />
             </Grid>
         </TabItem>
-        <TabItem Header="Visualize" />
+        <TabItem Header="Visualize">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Row="0" Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"
+                           Content="X" />
+                    <ComboBox Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Name="visualizeXCombobox"
+                              ItemsSource="{Binding Relation}" DisplayMemberPath="Name"
+                              SelectedItem="{Binding VisualizeSeries.XAttribute, ElementName=mainWindow}"/>
+                    <Button Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Tag="{Binding ElementName=visualizeXCombobox}"
+                            Content="Clear" Click="SelectorClearButton_Click" />
+                </Grid>
+                <Grid Grid.Row="0" Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"
+                           Content="Y" />
+                    <ComboBox Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Name="visualizeYCombobox"
+                              ItemsSource="{Binding Relation}" DisplayMemberPath="Name"
+                              SelectedItem="{Binding VisualizeSeries.YAttribute, ElementName=mainWindow}"/>
+                    <Button Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Tag="{Binding ElementName=visualizeYCombobox}"
+                            Content="Clear" Click="SelectorClearButton_Click" />
+                </Grid>
+                <Grid Grid.Row="0" Grid.Column="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"
+                           Content="Color" />
+                    <ComboBox Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Name="visualizeColorCombobox"
+                              ItemsSource="{Binding Relation}" DisplayMemberPath="Name"
+                              SelectedItem="{Binding VisualizeSeries.ColorAttribute, ElementName=mainWindow}"/>
+                    <Button Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Tag="{Binding ElementName=visualizeColorCombobox}"
+                            Content="Clear" Click="SelectorClearButton_Click" />
+                </Grid>
+                <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"
+                       Content="Jitter" />
+                    <Slider Grid.Row="1" Grid.Column="1" VerticalAlignment="Center"
+                        Value="{Binding VisualizeSeries.Jitter, ElementName=mainWindow}"
+                        Minimum="0" Maximum="1" />
+                    <Button Grid.Row="0" Grid.Column="2" VerticalAlignment="Center"
+                            Content="Refresh" />
+                </Grid>
+                <oxy:Plot Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3">
+                    <oxy:Plot.Axes>
+                        <oxy:LinearColorAxis x:Name="linearColorAxis" PaletteSize="50" Minimum="0" Maximum="1" Position="Right">
+                            <GradientStop Color="Red" Offset="0" />
+                            <GradientStop Color="Orange" Offset="0.5" />
+                            <GradientStop Color="Blue" Offset="1" />
+                        </oxy:LinearColorAxis>
+                    </oxy:Plot.Axes>
+                    <oxy:Plot.Series>
+                        <oxy:ScatterSeries ItemsSource="{Binding VisualizeSeries.Points, ElementName=mainWindow}"
+                                           MarkerType="Plus" />
+                    </oxy:Plot.Series>
+                </oxy:Plot>
+            </Grid>
+        </TabItem>
     </TabControl>
 </Window>
