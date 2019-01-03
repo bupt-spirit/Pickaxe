@@ -434,6 +434,7 @@ namespace Pickaxe.ViewModel
                         var algorithm = (IAlgorithm)parameters[0];
                         var output = (TextBox)parameters[1];
                         algorithm.Output = output;
+                        algorithm.Relation = Relation;
 
                         var dialog = new OptionDialog();
                         dialog.ViewModel.Relation = Relation;
