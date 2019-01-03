@@ -1,5 +1,5 @@
 ﻿using Microsoft.Win32;
-using OxyPlot.Wpf;
+using OxyPlot.Series;
 using Pickaxe.AlgorithmFramework;
 using Pickaxe.Model;
 using Pickaxe.Utility;
@@ -24,8 +24,7 @@ namespace Pickaxe.ViewModel
         private int _binNumber;
 
         private int _histogramBinNumber;
-        private LiveCharts.SeriesCollection _histogramSeriesCollection;
-        private ObservableCollection<string> _histogramLabels;
+        private ObservableCollection<ColumnItem> _histogramBins;
 
         private AlgorithmDiscovery _algorithmDiscovery;
 
@@ -87,23 +86,13 @@ namespace Pickaxe.ViewModel
             }
         }
 
-        public LiveCharts.SeriesCollection HistogramSeriesCollection
+        public ObservableCollection<ColumnItem> HistogramBins
         {
-            get => _histogramSeriesCollection;
+            get => _histogramBins;
             set
             {
-                _histogramSeriesCollection = value;
-                OnPropertyChanged("HistogramSeriesCollection");
-            }
-        }
-
-        public ObservableCollection<string> HistogramLabels
-        {
-            get => _histogramLabels;
-            set
-            {
-                _histogramLabels = value;
-                OnPropertyChanged("HistogramLabels");
+                _histogramBins = value;
+                OnPropertyChanged("HistogramBins");
             }
         }
 
@@ -152,8 +141,7 @@ namespace Pickaxe.ViewModel
             Relation = new Relation();
             FileName = null;
             HistogramBinNumber = 10;
-            HistogramSeriesCollection = new LiveCharts.SeriesCollection();
-            HistogramLabels = new ObservableCollection<string>();
+            HistogramBins = new ObservableCollection<ColumnItem>();
             AlgorithmDiscovery = new AlgorithmDiscovery();
             ClusterAlgorithmHistoryCollection = new ObservableCollection<AlgorithmHistoryViewModel>();
             ClassifyAlgorithmHistoryCollection = new ObservableCollection<AlgorithmHistoryViewModel>();
@@ -372,20 +360,16 @@ namespace Pickaxe.ViewModel
                         var attribute = (RelationAttribute)parameter;
                         attribute.StatisticView.Refresh();
 
-                        // Update Histogram
+                        var bins = new List<ColumnItem>();
+                        for (int i = 0; i < HistogramBinNumber; ++i)
+                            bins.Add(new ColumnItem(0));
+
                         var max = attribute.StatisticView.Max;
                         var min = attribute.StatisticView.Min;
-                        HistogramLabels.Clear();
-                        HistogramSeriesCollection.Clear();
+
                         if (!max.IsMissing() && !min.IsMissing())
                         {
                             var binSize = (max - min) / HistogramBinNumber;
-
-                            for (var i = 0; i < HistogramBinNumber; ++i)
-                                HistogramLabels.Add($"{min + i * binSize} - {min + (i + 1) * binSize}");
-
-                            var bins = new List<int>();
-                            bins.Resize(HistogramBinNumber, 0);
                             foreach (var value in attribute.Data)
                             {
                                 if (!value.IsMissing())
@@ -399,15 +383,11 @@ namespace Pickaxe.ViewModel
                                     {
                                         bin = HistogramBinNumber - 1;
                                     }
-                                    bins[bin] += 1;
+                                    bins[bin].Value += 1;
                                 }
                             }
-                            HistogramSeriesCollection.Add(new LiveCharts.Wpf.ColumnSeries
-                            {
-                                Title = attribute.Name,
-                                Values = new LiveCharts.ChartValues<int>(bins),
-                            });
                         }
+                        HistogramBins = new ObservableCollection<ColumnItem>(bins);
                     })
                 );
         }

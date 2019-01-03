@@ -8,7 +8,6 @@
         xmlns:viewmodel="clr-namespace:Pickaxe.ViewModel"
         xmlns:converter="clr-namespace:Pickaxe.Utility.Converter"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
-        xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
         mc:Ignorable="d"
         Title="Pickaxe" Height="450" Width="800"
@@ -154,15 +153,20 @@
                                 <Label Content="Bin Number" />
                                 <TextBox VerticalAlignment="Center" Text="{Binding HistogramBinNumber}" />
                             </StackPanel>
-                            <lvc:CartesianChart Grid.Row="1" Grid.Column="0"
-                                        Series="{Binding HistogramSeriesCollection}">
-                                <lvc:CartesianChart.AxisX>
-                                    <lvc:Axis Title="Value" Labels="{Binding HistogramLabels}" />
-                                </lvc:CartesianChart.AxisX>
-                                <lvc:CartesianChart.AxisY>
-                                    <lvc:Axis Title="Count" />
-                                </lvc:CartesianChart.AxisY>
-                            </lvc:CartesianChart>
+                            <oxy:Plot  Grid.Row="1" Grid.Column="0">
+                                <oxy:Plot.DefaultColors>
+                                    <x:Array Type="Color">
+                                        <Color>Black</Color>
+                                    </x:Array>
+                                </oxy:Plot.DefaultColors>
+                                <oxy:Plot.Axes>
+                                    <oxy:CategoryAxis Position="Bottom" />
+                                    <oxy:LinearAxis Position="Left" MinimumPadding="0" AbsoluteMinimum="0" />
+                                </oxy:Plot.Axes>
+                                <oxy:Plot.Series>
+                                    <oxy:ColumnSeries ItemsSource="{Binding HistogramBins}" />
+                                </oxy:Plot.Series>
+                            </oxy:Plot>
                         </Grid>
                     </GroupBox>
                     <Button Grid.Row="2" Grid.Column="0"
