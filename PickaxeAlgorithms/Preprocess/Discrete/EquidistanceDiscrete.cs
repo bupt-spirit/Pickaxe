@@ -1,5 +1,6 @@
 ﻿using Pickaxe.AlgorithmFramework;
 using Pickaxe.Model;
+using Pickaxe.Utility.ListExtension;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -18,6 +19,7 @@ namespace Pickaxe.Algorithms.Preprocess.Discrete
             {
                 new Option("Attributes", "Attributes to be equidistant discreted", typeof(IEnumerable<RelationAttribute>), null),
                 new Option("Bin Number", "Total bin number", typeof(int), 10),
+                new Option("Generate new Attibute","whether generate new attrbute",typeof(bool),false),
             };
         }
 
@@ -25,15 +27,16 @@ namespace Pickaxe.Algorithms.Preprocess.Discrete
         {
             var attributes = (IEnumerable<RelationAttribute>)Options[0].Value;
             var binNumber = (int)Options[1].Value;
+            var flag = (bool)Options[2].Value;
             foreach (var attribute in attributes)
             {
                 WriteOutputLine($"Working on attribute {attribute.Name}...");
-                Discrete(attribute, binNumber);
+                Discrete(attribute, binNumber,flag);
                 WriteOutputLine($"Finished working on attribute {attribute.Name}");
             }
         }
 
-        public static void Discrete(RelationAttribute attribute, int binNumber)
+        public void Discrete(RelationAttribute attribute, int binNumber,bool flag)
         {
             if (!(attribute.Type is AttributeType.Numeric))
                 return;
@@ -50,6 +53,26 @@ namespace Pickaxe.Algorithms.Preprocess.Discrete
             if (Single.IsNegativeInfinity(max) || Single.IsPositiveInfinity(min))
                 return;
             Value binSize = (max - min) / binNumber;
+            if (flag)
+            {
+                var data = new ObservableCollection<Value>();
+                data.Resize(attribute.Data.Count, Value.MISSING);
+                var newAttr = new RelationAttribute(attribute.Name + "equidistance_result", attribute.Type, data);
+                for (int i = 0; i < attribute.Data.Count; ++i)
+                {
+                    if (attribute.Data[i].IsMissing())
+                    {
+                        newAttr.Data[i] = Value.MISSING;
+                        continue;
+                    }
+                    if (attribute.Data[i] == max)
+                        newAttr.Data[i] = binNumber - 1; // if data[i] is max, use binNumber - 1
+                    else
+                        newAttr.Data[i] = (float)Math.Floor((attribute.Data[i] - min) / binSize);
+                }
+                Relation.Add(newAttr);
+                return;
+            }
             for (int i = 0; i < attribute.Data.Count; ++i)
             {
                 if (attribute.Data[i].IsMissing())

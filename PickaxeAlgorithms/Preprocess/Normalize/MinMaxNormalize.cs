@@ -53,7 +53,6 @@ namespace Pickaxe.Algorithms.Preprocess.Normalize
                 return;
             if (flag)
             {
-
                 var data = new ObservableCollection<Value>();
                 data.Resize(attribute.Data.Count, Value.MISSING);
                 var newAttr = new RelationAttribute(attribute.Name + "min_max_result", attribute.Type, data);
