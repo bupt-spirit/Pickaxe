@@ -247,7 +247,14 @@
                           ItemsSource="{Binding ClassifyAlgorithmHistoryCollection}"
                           SelectionMode="Single"
                           Tag="{Binding ElementName=classifyAlgorithmTextBox}"
-                          SelectionChanged="AlgorithmHistoryListView_SelectionChanged" />
+                          SelectionChanged="AlgorithmHistoryListView_SelectionChanged">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" />
+                            <GridViewColumn Header="Time" DisplayMemberBinding="{Binding DateTime}" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
                 <TextBox Grid.Row="0" Grid.Column="1" Grid.RowSpan="3"
                              x:Name="classifyAlgorithmTextBox" 
                              TextWrapping="Wrap" />
@@ -280,10 +287,17 @@
                     </Button.CommandParameter>
                 </Button>
                 <ListView Grid.Row="2" Grid.Column="0"
-                          ItemsSource="{Binding ClassifyAlgorithmHistoryCollection}"
+                          ItemsSource="{Binding ClusterAlgorithmHistoryCollection}"
                           SelectionMode="Single"
                           Tag="{Binding ElementName=clusterAlgorithmTextBox}"
-                          SelectionChanged="AlgorithmHistoryListView_SelectionChanged"/>
+                          SelectionChanged="AlgorithmHistoryListView_SelectionChanged">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" />
+                            <GridViewColumn Header="Time" DisplayMemberBinding="{Binding DateTime}" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
                 <TextBox Grid.Row="0" Grid.Column="1" Grid.RowSpan="3"
                              x:Name="clusterAlgorithmTextBox" 
                              TextWrapping="Wrap" />
@@ -316,10 +330,17 @@
                     </Button.CommandParameter>
                 </Button>
                 <ListView Grid.Row="2" Grid.Column="0"
-                          ItemsSource="{Binding ClassifyAlgorithmHistoryCollection}"
+                          ItemsSource="{Binding AssociateAlgorithmHistoryCollection}"
                           SelectionMode="Single"
                           Tag="{Binding ElementName=associateAlgorithmTextBox}"
-                          SelectionChanged="AlgorithmHistoryListView_SelectionChanged" />
+                          SelectionChanged="AlgorithmHistoryListView_SelectionChanged">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" />
+                            <GridViewColumn Header="Time" DisplayMemberBinding="{Binding DateTime}" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
                 <TextBox Grid.Row="0" Grid.Column="1" Grid.RowSpan="3"
                              x:Name="associateAlgorithmTextBox"
                              TextWrapping="Wrap" />
