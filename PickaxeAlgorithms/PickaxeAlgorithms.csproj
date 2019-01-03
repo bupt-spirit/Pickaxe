@@ -55,6 +55,8 @@
   <ItemGroup>
     <Compile Include="Cluster\KMeanCluster.cs" />
     <Compile Include="Associate\SpearmanAssociate.cs" />
+    <Compile Include="Preprocess\Convert\BinaryToNumeric.cs" />
+    <Compile Include="Preprocess\Convert\NominalToNumeric.cs" />
     <Compile Include="Preprocess\Discrete\EquidistanceDiscrete.cs" />
     <Compile Include="Preprocess\Discrete\EquifrequentDiscrete.cs" />
     <Compile Include="Preprocess\Normalize\MinMaxNormalize.cs" />

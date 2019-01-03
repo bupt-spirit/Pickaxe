@@ -30,6 +30,7 @@ namespace Pickaxe.Algorithms.Preprocess.Normalize
             {
                 WriteOutputLine($"Working on attribute {attribute.Name}...");
                 Normalize(attribute, flag);
+
                 WriteOutputLine($"Finished working on attribute {attribute.Name}");
             }
         }
@@ -52,6 +53,7 @@ namespace Pickaxe.Algorithms.Preprocess.Normalize
                 return;
             if (flag)
             {
+
                 var data = new ObservableCollection<Value>();
                 data.Resize(attribute.Data.Count, Value.MISSING);
                 var newAttr = new RelationAttribute(attribute.Name + "min_max_result", attribute.Type, data);
@@ -62,7 +64,7 @@ namespace Pickaxe.Algorithms.Preprocess.Normalize
                         newAttr.Data[i] = Value.MISSING;
                         continue;
                     }
-                        newAttr.Data[i] = (attribute.Data[i] - min) / (max - min);
+                    newAttr.Data[i] = (attribute.Data[i] - min) / (max - min);
                 }
                 Relation.Add(newAttr);
                 return;
