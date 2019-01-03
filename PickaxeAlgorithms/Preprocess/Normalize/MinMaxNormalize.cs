@@ -1,5 +1,6 @@
 ﻿using Pickaxe.AlgorithmFramework;
 using Pickaxe.Model;
+using Pickaxe.Utility.ListExtension;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -25,24 +26,18 @@ namespace Pickaxe.Algorithms.Preprocess.Normalize
         {
             var attributes = ((IEnumerable<RelationAttribute>)Options[0].Value).ToList();
             var flag = (bool)Options[1].Value;
-            var result = new RelationAttribute[attributes.Count];
-            int i = 0;
             foreach (var attribute in attributes)
             {
                 WriteOutputLine($"Working on attribute {attribute.Name}...");
-                result[i]=Normalize(attribute);
-                result[i].Name += "min_max_result";
+                Normalize(attribute, flag);
                 WriteOutputLine($"Finished working on attribute {attribute.Name}");
             }
-            if (flag)
-                foreach (var newAttribute in result)
-                    Relation.Add(newAttribute);
         }
 
-        private static RelationAttribute Normalize(RelationAttribute attribute)
+        private void Normalize(RelationAttribute attribute, bool flag)
         {
             if (!(attribute.Type is AttributeType.Numeric))
-                return null;
+                return;
             Value max = float.NegativeInfinity, min = float.PositiveInfinity;
             foreach (var v in attribute.Data)
             {
@@ -54,15 +49,33 @@ namespace Pickaxe.Algorithms.Preprocess.Normalize
                     min = v;
             }
             if (float.IsNegativeInfinity(max) || float.IsPositiveInfinity(min))
-                return null;
-           
-            for (var i = 0; i < attribute.Data.Count; i++)
+                return;
+            if (flag)
             {
-                if (attribute.Data[i].IsMissing())
-                    continue;
-                attribute.Data[i] = (attribute.Data[i] - min) / (max - min);
+                var data = new ObservableCollection<Value>();
+                data.Resize(attribute.Data.Count, Value.MISSING);
+                var newAttr = new RelationAttribute(attribute.Name + "min_max_result", attribute.Type, data);
+                for (var i = 0; i < attribute.Data.Count; i++)
+                {
+                    if (attribute.Data[i].IsMissing())
+                    {
+                        newAttr.Data[i] = Value.MISSING;
+                        continue;
+                    }
+                        newAttr.Data[i] = (attribute.Data[i] - min) / (max - min);
+                }
+                Relation.Add(newAttr);
+                return;
             }
-            return attribute;
+            else
+            {
+                for (var i = 0; i < attribute.Data.Count; i++)
+                {
+                    if (attribute.Data[i].IsMissing())
+                        continue;
+                    attribute.Data[i] = (attribute.Data[i] - min) / (max - min);
+                }
+            }
         }
     }
 }
