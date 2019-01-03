@@ -1,6 +1,5 @@
-﻿using LiveCharts;
-using LiveCharts.Wpf;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
+using OxyPlot.Wpf;
 using Pickaxe.AlgorithmFramework;
 using Pickaxe.Model;
 using Pickaxe.Utility;
@@ -25,7 +24,7 @@ namespace Pickaxe.ViewModel
         private int _binNumber;
 
         private int _histogramBinNumber;
-        private SeriesCollection _histogramSeriesCollection;
+        private LiveCharts.SeriesCollection _histogramSeriesCollection;
         private ObservableCollection<string> _histogramLabels;
 
         private AlgorithmDiscovery _algorithmDiscovery;
@@ -88,7 +87,7 @@ namespace Pickaxe.ViewModel
             }
         }
 
-        public SeriesCollection HistogramSeriesCollection
+        public LiveCharts.SeriesCollection HistogramSeriesCollection
         {
             get => _histogramSeriesCollection;
             set
@@ -153,7 +152,7 @@ namespace Pickaxe.ViewModel
             Relation = new Relation();
             FileName = null;
             HistogramBinNumber = 10;
-            HistogramSeriesCollection = new SeriesCollection();
+            HistogramSeriesCollection = new LiveCharts.SeriesCollection();
             HistogramLabels = new ObservableCollection<string>();
             AlgorithmDiscovery = new AlgorithmDiscovery();
             ClusterAlgorithmHistoryCollection = new ObservableCollection<AlgorithmHistoryViewModel>();
@@ -403,10 +402,10 @@ namespace Pickaxe.ViewModel
                                     bins[bin] += 1;
                                 }
                             }
-                            HistogramSeriesCollection.Add(new ColumnSeries
+                            HistogramSeriesCollection.Add(new LiveCharts.Wpf.ColumnSeries
                             {
                                 Title = attribute.Name,
-                                Values = new ChartValues<int>(bins),
+                                Values = new LiveCharts.ChartValues<int>(bins),
                             });
                         }
                     })
