@@ -1,5 +1,5 @@
 ﻿using Microsoft.Win32;
-using OxyPlot.Wpf;
+using OxyPlot.Series;
 using Pickaxe.AlgorithmFramework;
 using Pickaxe.Model;
 using Pickaxe.Utility;
@@ -10,7 +10,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -24,8 +23,7 @@ namespace Pickaxe.ViewModel
         private int _binNumber;
 
         private int _histogramBinNumber;
-        private LiveCharts.SeriesCollection _histogramSeriesCollection;
-        private ObservableCollection<string> _histogramLabels;
+        private ObservableCollection<ColumnItem> _histogramBins;
 
         private AlgorithmDiscovery _algorithmDiscovery;
 
@@ -34,6 +32,8 @@ namespace Pickaxe.ViewModel
         private ICommand _reloadRelation;
         private ICommand _saveRelation;
         private ICommand _saveAsRelation;
+
+        private ICommand _loadRelationFromCSV;
 
         private ICommand _addAttribute;
         private ICommand _insertAttribute;
@@ -87,23 +87,13 @@ namespace Pickaxe.ViewModel
             }
         }
 
-        public LiveCharts.SeriesCollection HistogramSeriesCollection
+        public ObservableCollection<ColumnItem> HistogramBins
         {
-            get => _histogramSeriesCollection;
+            get => _histogramBins;
             set
             {
-                _histogramSeriesCollection = value;
-                OnPropertyChanged("HistogramSeriesCollection");
-            }
-        }
-
-        public ObservableCollection<string> HistogramLabels
-        {
-            get => _histogramLabels;
-            set
-            {
-                _histogramLabels = value;
-                OnPropertyChanged("HistogramLabels");
+                _histogramBins = value;
+                OnPropertyChanged("HistogramBins");
             }
         }
 
@@ -152,8 +142,7 @@ namespace Pickaxe.ViewModel
             Relation = new Relation();
             FileName = null;
             HistogramBinNumber = 10;
-            HistogramSeriesCollection = new LiveCharts.SeriesCollection();
-            HistogramLabels = new ObservableCollection<string>();
+            HistogramBins = new ObservableCollection<ColumnItem>();
             AlgorithmDiscovery = new AlgorithmDiscovery();
             ClusterAlgorithmHistoryCollection = new ObservableCollection<AlgorithmHistoryViewModel>();
             ClassifyAlgorithmHistoryCollection = new ObservableCollection<AlgorithmHistoryViewModel>();
@@ -190,20 +179,11 @@ namespace Pickaxe.ViewModel
                             {
                                 try
                                 {
-                                    var obj = Formatter.Deserialize(stream);
-                                    if (obj is Relation relation)
-                                    {
-                                        relation.RebindInternalEvents();
-                                        Relation = relation;
-                                        FileName = openFileDialog.FileName;
-                                    }
-                                    else
-                                    {
-                                        MessageBox.Show("Selected file is not a valid Pickaxe file, please select another file",
-                                            "Invalid Pickaxe file");
-                                    }
+                                    Relation relation = Formatter.Deserialize(stream);
+                                    Relation = relation;
+                                    FileName = openFileDialog.FileName;
                                 }
-                                catch (SerializationException)
+                                catch (Exception)
                                 {
                                     MessageBox.Show("Selected file is corrupted, please select another file",
                                         "Invalid Pickaxe file");
@@ -224,16 +204,7 @@ namespace Pickaxe.ViewModel
                     {
                         using (var stream = new FileStream(FileName, FileMode.Open, FileAccess.Read))
                         {
-                            var obj = Formatter.Deserialize(stream);
-                            if (obj is Relation relation)
-                            {
-                                relation.RebindInternalEvents();
-                                Relation = relation;
-                            }
-                            else
-                            {
-                                throw new Exception($"Failed to reload file {FileName}");
-                            }
+                            Relation = Formatter.Deserialize(stream);
                         }
                     })
                 );
@@ -286,6 +257,36 @@ namespace Pickaxe.ViewModel
                         }
                     })
                 );
+        }
+
+        public ICommand LoadRelationFromCSV
+        {
+            get => _loadRelationFromCSV ?? (_loadRelationFromCSV = new RelayCommand(
+                    parameter => true,
+                    parameter =>
+                    {
+                        var openFileDialog = new OpenFileDialog
+                        {
+                            Filter = CSVFileFilter
+                        };
+                        if (openFileDialog.ShowDialog() == true)
+                        {
+                            using (var stream = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read))
+                            {
+                                try
+                                {
+                                    Relation = CSVFormatter.Deserialize(stream);
+                                }
+                                catch (Exception)
+                                {
+                                    MessageBox.Show("Selected file is corrupted, please select another file",
+                                        "Invalid CSV file");
+                                }
+                            }
+                        }
+                        // Do nothing
+                    }
+                ));
         }
 
         public ICommand AddAttribute
@@ -372,20 +373,16 @@ namespace Pickaxe.ViewModel
                         var attribute = (RelationAttribute)parameter;
                         attribute.StatisticView.Refresh();
 
-                        // Update Histogram
+                        var bins = new List<ColumnItem>();
+                        for (int i = 0; i < HistogramBinNumber; ++i)
+                            bins.Add(new ColumnItem(0));
+
                         var max = attribute.StatisticView.Max;
                         var min = attribute.StatisticView.Min;
-                        HistogramLabels.Clear();
-                        HistogramSeriesCollection.Clear();
+
                         if (!max.IsMissing() && !min.IsMissing())
                         {
                             var binSize = (max - min) / HistogramBinNumber;
-
-                            for (var i = 0; i < HistogramBinNumber; ++i)
-                                HistogramLabels.Add($"{min + i * binSize} - {min + (i + 1) * binSize}");
-
-                            var bins = new List<int>();
-                            bins.Resize(HistogramBinNumber, 0);
                             foreach (var value in attribute.Data)
                             {
                                 if (!value.IsMissing())
@@ -399,15 +396,11 @@ namespace Pickaxe.ViewModel
                                     {
                                         bin = HistogramBinNumber - 1;
                                     }
-                                    bins[bin] += 1;
+                                    bins[bin].Value += 1;
                                 }
                             }
-                            HistogramSeriesCollection.Add(new LiveCharts.Wpf.ColumnSeries
-                            {
-                                Title = attribute.Name,
-                                Values = new LiveCharts.ChartValues<int>(bins),
-                            });
                         }
+                        HistogramBins = new ObservableCollection<ColumnItem>(bins);
                     })
                 );
         }
@@ -474,7 +467,9 @@ namespace Pickaxe.ViewModel
         #region Static members
 
         private const string FileFilter = "Pickaxe files (*.pickaxe)|*.pickaxe|All files (*.*)|*.*";
-        private static readonly IFormatter Formatter = new BinaryFormatter();
+        private const string CSVFileFilter = "CSV files (*.csv)|*.csv|All files (*.*)|*.*";
+        private static readonly IRelationFormatter Formatter = new BinaryRelationFormatter();
+        private static readonly IRelationFormatter CSVFormatter = new CSVRelationFormatter();
 
         #endregion
 

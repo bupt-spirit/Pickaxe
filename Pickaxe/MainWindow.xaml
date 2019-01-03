@@ -8,7 +8,6 @@
         xmlns:viewmodel="clr-namespace:Pickaxe.ViewModel"
         xmlns:converter="clr-namespace:Pickaxe.Utility.Converter"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
-        xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
         mc:Ignorable="d"
         Title="Pickaxe" Height="450" Width="800"
@@ -41,12 +40,13 @@
                         <Button VerticalAlignment="Center" Content="Reload" Command="{Binding ReloadRelation}" />
                         <Button VerticalAlignment="Center" Content="Save" Command="{Binding SaveRelation}" />
                         <Button VerticalAlignment="Center" Content="Save As" Command="{Binding SaveAsRelation}" />
+                        <Button VerticalAlignment="Center" Content="Load From CSV" Command="{Binding LoadRelationFromCSV}" />
                         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
                             <StackPanel Orientation="Horizontal">
                                 <Label VerticalAlignment="Center" Content="Current File:"
-                           Visibility="{Binding FileName, Converter={StaticResource NullToVisibilityConverter}}" />
+                                       Visibility="{Binding FileName, Converter={StaticResource NullToVisibilityConverter}}" />
                                 <TextBlock VerticalAlignment="Center" Text="{Binding FileName}"
-                           Visibility="{Binding FileName, Converter={StaticResource NullToVisibilityConverter}}" />
+                                           Visibility="{Binding FileName, Converter={StaticResource NullToVisibilityConverter}}" />
                             </StackPanel>
                         </ScrollViewer>
                     </WrapPanel>
@@ -154,15 +154,20 @@
                                 <Label Content="Bin Number" />
                                 <TextBox VerticalAlignment="Center" Text="{Binding HistogramBinNumber}" />
                             </StackPanel>
-                            <lvc:CartesianChart Grid.Row="1" Grid.Column="0"
-                                        Series="{Binding HistogramSeriesCollection}">
-                                <lvc:CartesianChart.AxisX>
-                                    <lvc:Axis Title="Value" Labels="{Binding HistogramLabels}" />
-                                </lvc:CartesianChart.AxisX>
-                                <lvc:CartesianChart.AxisY>
-                                    <lvc:Axis Title="Count" />
-                                </lvc:CartesianChart.AxisY>
-                            </lvc:CartesianChart>
+                            <oxy:Plot  Grid.Row="1" Grid.Column="0">
+                                <oxy:Plot.DefaultColors>
+                                    <x:Array Type="Color">
+                                        <Color>Black</Color>
+                                    </x:Array>
+                                </oxy:Plot.DefaultColors>
+                                <oxy:Plot.Axes>
+                                    <oxy:CategoryAxis Position="Bottom" />
+                                    <oxy:LinearAxis Position="Left" MinimumPadding="0" AbsoluteMinimum="0" />
+                                </oxy:Plot.Axes>
+                                <oxy:Plot.Series>
+                                    <oxy:ColumnSeries ItemsSource="{Binding HistogramBins}" />
+                                </oxy:Plot.Series>
+                            </oxy:Plot>
                         </Grid>
                     </GroupBox>
                     <Button Grid.Row="2" Grid.Column="0"
