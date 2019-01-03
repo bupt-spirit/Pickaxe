@@ -11,7 +11,7 @@ namespace Pickaxe.Model
 
         private RelationAttribute _relationAttribute;
         private int _missing;
-        private ObservableSortedDictionary<Value, int> _distinctValues;
+        private Dictionary<Value, int> _distinctValues;
         private Value _min;
         private Value _max;
 
@@ -39,7 +39,7 @@ namespace Pickaxe.Model
             }
         }
 
-        public ObservableSortedDictionary<Value, int> DistinctValues
+        public Dictionary<Value, int> DistinctValues
         {
             get => _distinctValues;
             private set {
@@ -75,13 +75,14 @@ namespace Pickaxe.Model
         public StatisticView(RelationAttribute attribute)
         {
             RelationAttribute = attribute;
-            DistinctValues = new ObservableSortedDictionary<Value, int>(
-                Comparer<DictionaryEntry>.Create((x, y) =>
-                {
-                    var xKey = (Value)x.Key;
-                    var yKey = (Value)y.Key;
-                    return xKey.CompareTo(yKey);
-                }));
+            //DistinctValues = new ObservableSortedDictionary<Value, int>(
+            //    Comparer<DictionaryEntry>.Create((x, y) =>
+            //    {
+            //        var xKey = (Value)x.Key;
+            //        var yKey = (Value)y.Key;
+            //        return xKey.CompareTo(yKey);
+            //    }));
+            DistinctValues = new Dictionary<Value, int>();
             // Not refresh
             //Refresh();
         }
