@@ -43,11 +43,23 @@ namespace PickaxeAlgorithms.Associate
                 var temp = attribute.Data.Where((x) => !x.IsMissing()).ToList();
                 foreach (var v in temp)
                     sum += v;
-                miu = sum / (temp.Count - 1); // average
+                miu = sum / temp.Count; // average
                 sum = 0;
                 foreach (var v in temp)
                     sum += (v - miu) * (v - miu);
-                sigma = (float)Math.Sqrt(sum / (temp.Count - 1)); // standard deviation
+                sigma = (float)Math.Sqrt(sum / temp.Count); // standard deviation
+                float skewness = 0, peakedness = 0;
+                foreach (var v in temp)
+                {
+                    skewness += (float)Math.Pow(((v - miu) / sigma), 3);
+                    peakedness += (float)Math.Pow(((v - miu) / sigma), 4);
+                }
+                skewness /= temp.Count;
+                peakedness /= temp.Count;
+                WriteOutputLine($"Skewness={skewness}");
+                WriteOutputLine($"Reference:skew=0表正态分布,>0表右偏分布（正偏分布）,<0表左偏分布（负偏分布）");
+                WriteOutputLine($"Peakedness={peakedness}");
+                WriteOutputLine($"Reference:peaked=3表正态分布,>3表厚尾,<3表瘦尾");
                 WriteOutputLine($"Finished working on attribute {attribute.Name}");
             }
         }
