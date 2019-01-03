@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Pickaxe.AlgorithmFramework
 {
@@ -32,6 +29,7 @@ namespace Pickaxe.AlgorithmFramework
                         .Where((type) => type.IsClass && !type.IsAbstract)
                         .Where((type) => type.GetInterfaces().Contains(typeof(IAlgorithm)))
                         .Select((type) => (IAlgorithm)Activator.CreateInstance(type))
+                        .OrderBy((algorithm) => algorithm.Name)
                 ));
         }
 
