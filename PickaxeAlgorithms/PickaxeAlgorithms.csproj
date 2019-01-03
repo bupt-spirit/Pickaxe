@@ -53,7 +53,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Associate\PearsonAssociate.cs" />
     <Compile Include="Associate\SkewnessPeakedness.cs" />
+    <Compile Include="Classify\ID3.cs" />
     <Compile Include="Cluster\KMeanCluster.cs" />
     <Compile Include="Associate\SpearmanAssociate.cs" />
     <Compile Include="Classify\KNN.cs" />
