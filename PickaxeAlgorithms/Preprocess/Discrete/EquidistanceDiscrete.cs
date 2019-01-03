@@ -17,7 +17,7 @@ namespace Pickaxe.Algorithms.Preprocess.Discrete
             Options = new ObservableCollection<Option>
             {
                 new Option("Attributes", "Attributes to be equidistant discreted", typeof(IEnumerable<RelationAttribute>), null),
-                new Option("Bin Number", "Total bin number", typeof(int), 10),
+                new Option("Bin Number", "Total bin number", typeof(int), 3),
             };
         }
 

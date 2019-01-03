@@ -53,6 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Preprocess\Classify\KNN.cs" />
     <Compile Include="Preprocess\Discrete\EquidistanceDiscrete.cs" />
     <Compile Include="Preprocess\Discrete\EquifrequentDiscrete.cs" />
     <Compile Include="Preprocess\Normalize\MinMaxNormalize.cs" />
