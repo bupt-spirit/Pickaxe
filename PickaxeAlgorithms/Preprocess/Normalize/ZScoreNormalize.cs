@@ -31,12 +31,12 @@ namespace Pickaxe.Algorithms.Preprocess.Normalize
             foreach (var attribute in attributes)
             {
                 WriteOutputLine($"Working on attribute {attribute.Name}...");
-                Normalize(attribute,flag);
+                Normalize(attribute, flag);
                 WriteOutputLine($"Finished working on attribute {attribute.Name}");
             }
         }
 
-        private void Normalize(RelationAttribute attribute,bool flag)
+        private void Normalize(RelationAttribute attribute, bool flag)
         {
             // Z-Score Normalize
             if (!(attribute.Type is AttributeType.Numeric))
@@ -46,11 +46,11 @@ namespace Pickaxe.Algorithms.Preprocess.Normalize
             var temp = attribute.Data.Where((x) => !x.IsMissing()).ToList();
             foreach (var v in temp)
                 sum += v;
-            miu = sum / (temp.Count - 1); // average
+            miu = sum / temp.Count; // average
             sum = 0;
             foreach (var v in temp)
                 sum += (v - miu) * (v - miu);
-            sigma = (float)Math.Sqrt(sum / (temp.Count - 1)); // standard deviation
+            sigma = (float)Math.Sqrt(sum / temp.Count); // standard deviation
             if (flag)
             {
                 var data = new ObservableCollection<Value>();
@@ -59,8 +59,8 @@ namespace Pickaxe.Algorithms.Preprocess.Normalize
                 for (var i = 0; i < attribute.Data.Count; i++)
                 {
                     if (attribute.Data[i].IsMissing())
-                    { 
-                        newAttr.Data[i]=Value.MISSING;
+                    {
+                        newAttr.Data[i] = Value.MISSING;
                         continue;
                     }
                     newAttr.Data[i] = (attribute.Data[i] - miu) / sigma;
