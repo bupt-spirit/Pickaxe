@@ -158,11 +158,8 @@ namespace Pickaxe.Model
             public ObservableCollection<string> NominalLabels
             {
                 get => _nominalLabels;
-                set {
+                private set {
                     _nominalLabels = value;
-                    for (int i = 0; i < _nominalLabels.Count; ++i)
-                        _validValues.Add(Value.ToValue(i));
-                    _validValues.Add(Value.MISSING);
                     NominalLabels.CollectionChanged += NominalLabels_CollectionChanged;
                     OnPropertyChanged("NominalLabels");
                 }

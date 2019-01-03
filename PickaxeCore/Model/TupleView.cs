@@ -17,12 +17,12 @@ namespace Pickaxe.Model
         private int _tupleIndex;
 
         [IndexerName("Item")]
-        public object this[int index]
+        public Value this[int index]
         {
             get => Relation[index].Data[TupleIndex];
             set
             {
-                Relation[index].Data[TupleIndex] = (Value)value;
+                Relation[index].Data[TupleIndex] = value;
                 OnPropertyChanged("Item[]");
             }
         }
