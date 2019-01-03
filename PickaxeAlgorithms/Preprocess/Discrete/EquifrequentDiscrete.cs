@@ -20,6 +20,7 @@ namespace Pickaxe.Algorithms.Preprocess.Discrete
             {
                 new Option("Attributes", "Attributes to be equifrequent discreted", typeof(IEnumerable<RelationAttribute>), null),
                 new Option("Bin Number", "Total bin number", typeof(int), 10),
+                new Option("Generate new Attibute","whether generate new attrbute",typeof(bool),false),
             };
         }
 
@@ -27,16 +28,17 @@ namespace Pickaxe.Algorithms.Preprocess.Discrete
         {
             var attributes = (IEnumerable<RelationAttribute>)Options[0].Value;
             var binNumber = (int)Options[1].Value;
+            var flag = (bool)Options[2].Value;
             foreach (var attribute in attributes)
             {
                 WriteOutputLine($"Working on attribute {attribute.Name}...");
-                Discrete(attribute, binNumber);
+                Discrete(attribute, binNumber,flag);
                 WriteOutputLine($"Finished working on attribute {attribute.Name}");
             }
         }
         
         // TODO: Maybe wrong algorithm
-        public static void Discrete(RelationAttribute attribute, int binNumber)
+        public void Discrete(RelationAttribute attribute, int binNumber,bool flag)
         {
             if (!(attribute.Type is AttributeType.Numeric))
                 return;
@@ -46,8 +48,31 @@ namespace Pickaxe.Algorithms.Preprocess.Discrete
                 .Where(x => !x.v.IsMissing()).OrderBy((x) => x.v).ToList();
             if (temp.Count == 0)
                 return;
-            var binSize = (int)Math.Ceiling((temp.Count - 1) / (double)binNumber);
+            var binSize = (int)Math.Ceiling(temp.Count / (double)binNumber);
             var binCount = new List<int>();
+            if (flag)
+            {
+                var data = new ObservableCollection<Value>();
+                data.Resize(attribute.Data.Count, Value.MISSING);
+                var newAttr = new RelationAttribute(attribute.Name + "equifrequent_result", attribute.Type, data);
+                binCount.Resize(binNumber, 0); // Tracing the count in every bin
+                for (var k = 0; k < temp.Count; k++)
+                {
+                    var j = (int)Math.Floor(k / (double)binNumber);
+                    while (j < binNumber)
+                    {
+                        if (binCount[j] < binSize)
+                        {
+                            newAttr.Data[temp[k].oldIndex] = j;
+                            binCount[j] += 1;
+                            break;
+                        }
+                        j++;
+                    }
+                }
+                Relation.Add(newAttr);
+                return;
+            }
             binCount.Resize(binNumber, 0); // Tracing the count in every bin
             for (var k = 0; k < temp.Count; k++)
             {
