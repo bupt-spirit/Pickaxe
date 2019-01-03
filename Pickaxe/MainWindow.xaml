@@ -40,12 +40,13 @@
                         <Button VerticalAlignment="Center" Content="Reload" Command="{Binding ReloadRelation}" />
                         <Button VerticalAlignment="Center" Content="Save" Command="{Binding SaveRelation}" />
                         <Button VerticalAlignment="Center" Content="Save As" Command="{Binding SaveAsRelation}" />
+                        <Button VerticalAlignment="Center" Content="Load From CSV" Command="{Binding LoadRelationFromCSV}" />
                         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
                             <StackPanel Orientation="Horizontal">
                                 <Label VerticalAlignment="Center" Content="Current File:"
-                           Visibility="{Binding FileName, Converter={StaticResource NullToVisibilityConverter}}" />
+                                       Visibility="{Binding FileName, Converter={StaticResource NullToVisibilityConverter}}" />
                                 <TextBlock VerticalAlignment="Center" Text="{Binding FileName}"
-                           Visibility="{Binding FileName, Converter={StaticResource NullToVisibilityConverter}}" />
+                                           Visibility="{Binding FileName, Converter={StaticResource NullToVisibilityConverter}}" />
                             </StackPanel>
                         </ScrollViewer>
                     </WrapPanel>

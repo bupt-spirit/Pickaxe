@@ -10,7 +10,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -33,6 +32,8 @@ namespace Pickaxe.ViewModel
         private ICommand _reloadRelation;
         private ICommand _saveRelation;
         private ICommand _saveAsRelation;
+
+        private ICommand _loadRelationFromCSV;
 
         private ICommand _addAttribute;
         private ICommand _insertAttribute;
@@ -178,20 +179,11 @@ namespace Pickaxe.ViewModel
                             {
                                 try
                                 {
-                                    var obj = Formatter.Deserialize(stream);
-                                    if (obj is Relation relation)
-                                    {
-                                        relation.RebindInternalEvents();
-                                        Relation = relation;
-                                        FileName = openFileDialog.FileName;
-                                    }
-                                    else
-                                    {
-                                        MessageBox.Show("Selected file is not a valid Pickaxe file, please select another file",
-                                            "Invalid Pickaxe file");
-                                    }
+                                    Relation relation = Formatter.Deserialize(stream);
+                                    Relation = relation;
+                                    FileName = openFileDialog.FileName;
                                 }
-                                catch (SerializationException)
+                                catch (Exception)
                                 {
                                     MessageBox.Show("Selected file is corrupted, please select another file",
                                         "Invalid Pickaxe file");
@@ -212,16 +204,7 @@ namespace Pickaxe.ViewModel
                     {
                         using (var stream = new FileStream(FileName, FileMode.Open, FileAccess.Read))
                         {
-                            var obj = Formatter.Deserialize(stream);
-                            if (obj is Relation relation)
-                            {
-                                relation.RebindInternalEvents();
-                                Relation = relation;
-                            }
-                            else
-                            {
-                                throw new Exception($"Failed to reload file {FileName}");
-                            }
+                            Relation = Formatter.Deserialize(stream);
                         }
                     })
                 );
@@ -274,6 +257,36 @@ namespace Pickaxe.ViewModel
                         }
                     })
                 );
+        }
+
+        public ICommand LoadRelationFromCSV
+        {
+            get => _loadRelationFromCSV ?? (_loadRelationFromCSV = new RelayCommand(
+                    parameter => true,
+                    parameter =>
+                    {
+                        var openFileDialog = new OpenFileDialog
+                        {
+                            Filter = CSVFileFilter
+                        };
+                        if (openFileDialog.ShowDialog() == true)
+                        {
+                            using (var stream = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read))
+                            {
+                                try
+                                {
+                                    Relation = CSVFormatter.Deserialize(stream);
+                                }
+                                catch (Exception)
+                                {
+                                    MessageBox.Show("Selected file is corrupted, please select another file",
+                                        "Invalid CSV file");
+                                }
+                            }
+                        }
+                        // Do nothing
+                    }
+                ));
         }
 
         public ICommand AddAttribute
@@ -454,7 +467,9 @@ namespace Pickaxe.ViewModel
         #region Static members
 
         private const string FileFilter = "Pickaxe files (*.pickaxe)|*.pickaxe|All files (*.*)|*.*";
-        private static readonly IFormatter Formatter = new BinaryFormatter();
+        private const string CSVFileFilter = "CSV files (*.csv)|*.csv|All files (*.*)|*.*";
+        private static readonly IRelationFormatter Formatter = new BinaryRelationFormatter();
+        private static readonly IRelationFormatter CSVFormatter = new CSVRelationFormatter();
 
         #endregion
 
