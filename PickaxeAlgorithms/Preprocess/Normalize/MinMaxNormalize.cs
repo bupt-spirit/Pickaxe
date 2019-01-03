@@ -16,6 +16,7 @@ namespace Pickaxe.Algorithms.Preprocess.Normalize
             Options = new ObservableCollection<Option>
             {
                 new Option("Attributes", "Attributes to be Min Max normalized", typeof(IEnumerable<RelationAttribute>), null),
+                new Option("Generate new Attibute","whether generate new attrbute",typeof(bool),false),
             };
         }
 
