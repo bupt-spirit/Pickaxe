@@ -316,7 +316,7 @@
                           Tag="{Binding ElementName=associateAlgorithmTextBox}"
                           SelectionChanged="AlgorithmHistoryListView_SelectionChanged" />
                 <TextBox Grid.Row="0" Grid.Column="1" Grid.RowSpan="3"
-                             x:Name="associateAlgorithmTextBox" 
+                             x:Name="associateAlgorithmTextBox"
                              TextWrapping="Wrap" />
             </Grid>
         </TabItem>
