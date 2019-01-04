@@ -204,4 +204,27 @@ namespace Pickaxe.Utility.Converter
             throw new NotSupportedException();
         }
     }
+
+    class PureValueStringConverter : IValueConverter
+    {
+        public PureValueStringConverter()
+        {
+        }
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is Value inValue)
+                return inValue.ToString();
+            else
+                throw new ArgumentException("Not a Value");
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is string inString)
+                return Value.Parse(inString);
+            else
+                throw new ArgumentException("Not a string");
+        }
+    }
 }

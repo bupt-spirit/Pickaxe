@@ -134,6 +134,19 @@ namespace Pickaxe
                 });
                 element = textBox;
             }
+            else if (option.Type == typeof(Value))
+            {
+                var textBox = new TextBox
+                {
+                    DataContext = option,
+                };
+                option.Value = (Value?)option.Value ?? Value.MISSING;
+                BindingOperations.SetBinding(textBox, TextBox.TextProperty, new Binding("Value")
+                {
+                    Converter = new PureValueStringConverter(),
+                });
+                element = textBox;
+            }
             else if (option.Type == typeof(RelationAttribute))
             {
                 var listView = (ListView)FindResource("SingleSelectionAttributeListView");
