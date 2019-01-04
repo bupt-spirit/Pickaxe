@@ -19,6 +19,7 @@ namespace PickaxeAlgorithms.Preprocess.Classify
             Options = new System.Collections.ObjectModel.ObservableCollection<Option>
             {
                 new Option("Attributes", "Attributes to be classified", typeof(IEnumerable<RelationAttribute>), null),
+                //new Option("Label ")
                 new Option("K Number", "Class number", typeof(int), 3),
             };
         }

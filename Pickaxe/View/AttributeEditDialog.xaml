@@ -92,10 +92,12 @@
         <ComboBox Grid.Row="1" Grid.Column="1"
                   x:Name="comboBox"
                   SelectionChanged="ComboBox_SelectionChanged">
-            <ComboBoxItem x:Name="defaultComboBoxItem"
+            <ComboBoxItem x:Name="numericComboBoxItem"
                           Content="{Binding NumericType}" ContentTemplate="{StaticResource ComboBoxItemTemplate}" />
-            <ComboBoxItem Content="{Binding BinaryType}" ContentTemplate="{StaticResource ComboBoxItemTemplate}" />
-            <ComboBoxItem Content="{Binding NominalType}" ContentTemplate="{StaticResource ComboBoxItemTemplate}" />
+            <ComboBoxItem x:Name="binaryComboBoxItem"
+                          Content="{Binding BinaryType}" ContentTemplate="{StaticResource ComboBoxItemTemplate}" />
+            <ComboBoxItem x:Name="nominalComboBoxItem"
+                          Content="{Binding NominalType}" ContentTemplate="{StaticResource ComboBoxItemTemplate}" />
         </ComboBox>
         <Label Grid.Row="2" Grid.Column="0" Content="Labels" />
         <Grid Grid.Row="2" Grid.Column="1"

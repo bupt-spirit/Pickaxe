@@ -1,9 +1,9 @@
 ﻿using Microsoft.VisualBasic.FileIO;
-using Pickaxe.Model;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 
 namespace Pickaxe.Model
 {
@@ -40,7 +40,7 @@ namespace Pickaxe.Model
         public Relation Deserialize(Stream serializationStream)
         {
             var relation = new Relation();
-            using (var parser = new TextFieldParser(serializationStream))
+            using (var parser = new TextFieldParser(serializationStream, Encoding.UTF8, true))
             {
                 parser.SetDelimiters(new string[] { "," });
                 parser.HasFieldsEnclosedInQuotes = true;
@@ -55,11 +55,11 @@ namespace Pickaxe.Model
                     string[] fields = parser.ReadFields();
                     for (int i = 0; i < relation.Count; ++i)
                     {
-                        try
+                        if (float.TryParse(fields[i], out var inFloat))
                         {
-                            tuplesView[tupleIndex][i] = Value.ToValue(float.Parse(fields[i]));
+                            tuplesView[tupleIndex][i] = inFloat;
                         }
-                        catch (FormatException)
+                        else
                         {
                             tuplesView[tupleIndex][i] = Value.MISSING;
                         }

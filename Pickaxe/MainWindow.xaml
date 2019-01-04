@@ -81,6 +81,7 @@
                     </DataGrid>
                     <WrapPanel Grid.Row="1" Grid.Column="0">
                         <Button Content="Add" Command="{Binding AddAttribute}" />
+                        <Button Content="Replace" Command="{Binding ReplaceAttribute}" CommandParameter="{Binding SelectedIndex, ElementName=attributeDataGrid}" />
                         <Button Content="Insert" Command="{Binding InsertAttribute}" CommandParameter="{Binding SelectedIndex, ElementName=attributeDataGrid}" />
                         <Button Content="Remove" Command="{Binding RemoveAttribute}" CommandParameter="{Binding SelectedIndex, ElementName=attributeDataGrid}" />
                     </WrapPanel>
@@ -247,7 +248,14 @@
                           ItemsSource="{Binding ClassifyAlgorithmHistoryCollection}"
                           SelectionMode="Single"
                           Tag="{Binding ElementName=classifyAlgorithmTextBox}"
-                          SelectionChanged="AlgorithmHistoryListView_SelectionChanged" />
+                          SelectionChanged="AlgorithmHistoryListView_SelectionChanged">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" />
+                            <GridViewColumn Header="Time" DisplayMemberBinding="{Binding DateTime}" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
                 <TextBox Grid.Row="0" Grid.Column="1" Grid.RowSpan="3"
                              x:Name="classifyAlgorithmTextBox" 
                              TextWrapping="Wrap" />
@@ -280,10 +288,17 @@
                     </Button.CommandParameter>
                 </Button>
                 <ListView Grid.Row="2" Grid.Column="0"
-                          ItemsSource="{Binding ClassifyAlgorithmHistoryCollection}"
+                          ItemsSource="{Binding ClusterAlgorithmHistoryCollection}"
                           SelectionMode="Single"
                           Tag="{Binding ElementName=clusterAlgorithmTextBox}"
-                          SelectionChanged="AlgorithmHistoryListView_SelectionChanged"/>
+                          SelectionChanged="AlgorithmHistoryListView_SelectionChanged">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" />
+                            <GridViewColumn Header="Time" DisplayMemberBinding="{Binding DateTime}" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
                 <TextBox Grid.Row="0" Grid.Column="1" Grid.RowSpan="3"
                              x:Name="clusterAlgorithmTextBox" 
                              TextWrapping="Wrap" />
@@ -316,10 +331,17 @@
                     </Button.CommandParameter>
                 </Button>
                 <ListView Grid.Row="2" Grid.Column="0"
-                          ItemsSource="{Binding ClassifyAlgorithmHistoryCollection}"
+                          ItemsSource="{Binding AssociateAlgorithmHistoryCollection}"
                           SelectionMode="Single"
                           Tag="{Binding ElementName=associateAlgorithmTextBox}"
-                          SelectionChanged="AlgorithmHistoryListView_SelectionChanged" />
+                          SelectionChanged="AlgorithmHistoryListView_SelectionChanged">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" />
+                            <GridViewColumn Header="Time" DisplayMemberBinding="{Binding DateTime}" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
                 <TextBox Grid.Row="0" Grid.Column="1" Grid.RowSpan="3"
                              x:Name="associateAlgorithmTextBox"
                              TextWrapping="Wrap" />
@@ -388,7 +410,7 @@
                     <Button Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Tag="{Binding ElementName=visualizeColorCombobox}"
                             Content="Clear" Click="SelectorClearButton_Click" />
                 </Grid>
-                <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3">
+                <Grid Grid.Row="1" Grid.Column="0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto" />
                     </Grid.RowDefinitions>
@@ -397,14 +419,37 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="auto" />
                     </Grid.ColumnDefinitions>
-                    <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"
+                    <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"
                        Content="Jitter" />
-                    <Slider Grid.Row="1" Grid.Column="1" VerticalAlignment="Center"
-                        Value="{Binding VisualizeSeries.Jitter, ElementName=mainWindow}"
-                        Minimum="0" Maximum="1" />
-                    <Button Grid.Row="0" Grid.Column="2" VerticalAlignment="Center"
-                            Content="Refresh" />
+                    <Slider Grid.Row="0" Grid.Column="1" VerticalAlignment="Center"
+                            TickFrequency="1" TickPlacement="BottomRight"
+                            Value="{Binding VisualizeSeries.Jitter, ElementName=mainWindow}"
+                            IsSnapToTickEnabled="True"
+                            Minimum="0" Maximum="100" />
+                    <TextBox Grid.Row="0" Grid.Column="2" VerticalAlignment="Center"
+                             Text="{Binding VisualizeSeries.Jitter, ElementName=mainWindow}" />
                 </Grid>
+                <Grid Grid.Row="1" Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"
+                       Content="Point Number" />
+                    <Slider Grid.Row="0" Grid.Column="1" VerticalAlignment="Center"
+                            TickFrequency="10" TickPlacement="BottomRight"
+                            Value="{Binding VisualizeSeries.PointNumber, ElementName=mainWindow}"
+                            IsSnapToTickEnabled="True"
+                            Minimum="10" Maximum="200" />
+                    <TextBox Grid.Row="0" Grid.Column="2" VerticalAlignment="Center"
+                             Text="{Binding VisualizeSeries.PointNumber, ElementName=mainWindow}" />
+                </Grid>
+                <Button Grid.Row="1" Grid.Column="2" VerticalAlignment="Center"
+                        Content="Refresh" />
                 <oxy:Plot Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3">
                     <oxy:Plot.Axes>
                         <oxy:LinearColorAxis x:Name="linearColorAxis" PaletteSize="50" Minimum="0" Maximum="1" Position="Right">

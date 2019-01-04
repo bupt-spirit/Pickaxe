@@ -91,6 +91,7 @@
     <Compile Include="ViewModel\AttributeEditDialogViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="ViewModel\OptionDialogViewModel.cs" />
+    <Compile Include="View\DragIgnoreSlider.cs" />
     <Compile Include="View\OptionDialog.xaml.cs">
       <DependentUpon>OptionDialog.xaml</DependentUpon>
     </Compile>

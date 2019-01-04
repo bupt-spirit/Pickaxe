@@ -63,6 +63,16 @@ namespace Pickaxe
         private RelationAttribute _xAttribute;
         private RelationAttribute _yAttribute;
         private RelationAttribute _colorAttribute;
+        private int _pointNumber;
+
+        public VisualizeSeries()
+        {
+            _jitter = 0;
+            _pointNumber = 100;
+            _xAttribute = null;
+            _yAttribute = null;
+            _colorAttribute = null;
+        }
 
         public float Jitter
         {
@@ -105,6 +115,17 @@ namespace Pickaxe
             }
         }
 
+        public int PointNumber
+        {
+            get => _pointNumber;
+            set
+            {
+                _pointNumber = value;
+                OnPropertyChanged("PointNumber");
+                OnPropertyChanged("Points");
+            }
+        }
+
         public IEnumerable<ScatterPoint> Points
         {
             get
@@ -118,6 +139,8 @@ namespace Pickaxe
                 else
                 {
                     var count = xCount > yCount ? xCount : yCount;
+                    if (PointNumber < count)
+                        count = PointNumber;
 
                     var r = new Random(0);
 
@@ -147,13 +170,17 @@ namespace Pickaxe
         public IEnumerable<double> JitteredAttributeData(int count, RelationAttribute attribute, Random r)
         {
             if (attribute == null) return Enumerable.Repeat(0.0, count);
+            var min = attribute.StatisticView.Min;
+            var max = attribute.StatisticView.Max;
+            if (max.IsMissing() || min.IsMissing()) return Enumerable.Repeat(0.0, count);
+            var range = max - min;
             return attribute.Data.Select((data) =>
             {
                 if (data.IsMissing()) return 0;
-                var randomFactor = r.NextDouble() - 0.5;
-                var result = data * (randomFactor * Jitter + 1);
+                var randomFactor = (r.NextDouble() - 0.5);
+                var result = data + range * randomFactor * Jitter / 100;
                 return result;
-            });
+            }).Take(count);
         }
 
         public IEnumerable<double> NormalizedAttributeData(int count, RelationAttribute attribute)
@@ -167,7 +194,7 @@ namespace Pickaxe
             {
                 if (data.IsMissing()) return 0.0;
                 return (data - min) / range;
-            });
+            }).Take(count);
         }
 
         public ScatterPoint GetScatterPoint(int n)
