@@ -9,6 +9,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Reflection;
 
 namespace Pickaxe
 {
@@ -127,7 +128,8 @@ namespace Pickaxe
                 {
                     DataContext = option,
                 };
-                var defaultValue = (float?)option.Value ?? 0;
+                var defaultValue = (float?)option.Value ?? 0.0f;
+                option.Value = defaultValue;
                 BindingOperations.SetBinding(textBox, TextBox.TextProperty, new Binding("Value")
                 {
                     Converter = new FloatWithDefaultStringConverter(defaultValue),
