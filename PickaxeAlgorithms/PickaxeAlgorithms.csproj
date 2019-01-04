@@ -56,7 +56,7 @@
     <Compile Include="Associate\Apriori.cs" />
     <Compile Include="Associate\PearsonAssociate.cs" />
     <Compile Include="Associate\SkewnessPeakedness.cs" />
-    <Compile Include="Cluster\Dbscan/>
+    <Compile Include="Cluster\Dbscan.cs"/>
     <Compile Include="Cluster\KMeanCluster.cs" />
     <Compile Include="Associate\SpearmanAssociate.cs" />
     <Compile Include="Classify\KNearestNeighbor.cs" />
