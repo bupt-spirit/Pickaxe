@@ -8,6 +8,8 @@ namespace Pickaxe.AlgorithmFramework
 {
     public class AlgorithmDiscovery
     {
+        private static NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
         #region Fields
 
         private ObservableCollection<IAlgorithm> _algorithms;
@@ -28,7 +30,20 @@ namespace Pickaxe.AlgorithmFramework
                         .SelectMany(s => s.GetTypes())
                         .Where((type) => type.IsClass && !type.IsAbstract)
                         .Where((type) => type.GetInterfaces().Contains(typeof(IAlgorithm)))
-                        .Select((type) => (IAlgorithm)Activator.CreateInstance(type))
+                        .Select((type) =>
+                        {
+                            IAlgorithm instance = null;
+                            try
+                            {
+                                instance = (IAlgorithm)Activator.CreateInstance(type);
+                            }
+                            catch (Exception e)
+                            {
+                                Logger.Warn("Load IAlgorithm {0} failed: {1}", type, e);
+                            }
+                            return instance;
+                        })
+                        .Where((algorithm) => algorithm != null)
                         .OrderBy((algorithm) => algorithm.Name)
                 ));
         }
