@@ -1,8 +1,5 @@
 ﻿using Pickaxe.AlgorithmFramework;
 using Pickaxe.Model;
-using Pickaxe.Utility.ListExtension;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace Pickaxe.Algorithms.Preprocess.Clean
@@ -30,9 +27,19 @@ namespace Pickaxe.Algorithms.Preprocess.Clean
             var to = (Value)Options[2].Value;
             for (int i = 0; i < attribute.Data.Count; ++i)
             {
-                if ((from.IsMissing() && attribute.Data[i].IsMissing()) ||
-                    attribute.Data[i] == from)
+                if (from.IsMissing())
+                {
+                    if (attribute.Data[i].IsMissing())
+                    {
+                        WriteOutputLine($"Map value {i} to {to.ToString()}");
+                        attribute.Data[i] = to;
+                    }
+                }
+                else if (attribute.Data[i] == from)
+                {
+                    WriteOutputLine($"Map value {i} to {to.ToString()}");
                     attribute.Data[i] = to;
+                }
             }
         }
     }
