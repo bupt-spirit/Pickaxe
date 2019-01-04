@@ -437,7 +437,7 @@
                     <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"
                        Content="Jitter" />
                     <Slider Grid.Row="0" Grid.Column="1" VerticalAlignment="Center"
-                            TickFrequency="1" TickPlacement="BottomRight"
+                            TickFrequency="10" TickPlacement="BottomRight"
                             Value="{Binding VisualizeSeries.Jitter, ElementName=mainWindow}"
                             IsSnapToTickEnabled="True"
                             Minimum="0" Maximum="100" />
@@ -456,10 +456,10 @@
                     <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"
                        Content="Point Number" />
                     <Slider Grid.Row="0" Grid.Column="1" VerticalAlignment="Center"
-                            TickFrequency="10" TickPlacement="BottomRight"
+                            TickFrequency="100" TickPlacement="BottomRight"
                             Value="{Binding VisualizeSeries.PointNumber, ElementName=mainWindow}"
                             IsSnapToTickEnabled="True"
-                            Minimum="10" Maximum="200" />
+                            Minimum="10" Maximum="1000" />
                     <TextBox Grid.Row="0" Grid.Column="2" VerticalAlignment="Center"
                              Text="{Binding VisualizeSeries.PointNumber, ElementName=mainWindow}" />
                 </Grid>
