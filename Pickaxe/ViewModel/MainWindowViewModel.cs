@@ -9,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Runtime.Serialization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -36,6 +35,7 @@ namespace Pickaxe.ViewModel
         private ICommand _loadRelationFromCSV;
 
         private ICommand _addAttribute;
+        private ICommand _replaceAttribute;
         private ICommand _insertAttribute;
         private ICommand _removeAttribute;
 
@@ -308,6 +308,44 @@ namespace Pickaxe.ViewModel
                 );
         }
 
+        public ICommand ReplaceAttribute
+        {
+            get => _replaceAttribute ?? (
+                _replaceAttribute = new RelayCommand(
+                    parameter =>
+                    {
+                        if (Relation == null)
+                            return false;
+                        if (parameter is int inInt)
+                        {
+                            return inInt != -1;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    },
+                    parameter =>
+                    {
+                        var index = (int)parameter;
+                        var attribute = Relation[index];
+                        var newAttribute = ShowDialogForReplaceAttribute(attribute);
+                        if (newAttribute == null)
+                            return;
+                        foreach (var v in attribute.Data)
+                        {
+                            if (!newAttribute.Type.ValidateValueWithMissing(v))
+                            {
+                                MessageBox.Show("New attribute is not compatible to current data", "Replace Failed");
+                                return;
+                            }
+                        }
+                        newAttribute.Data = attribute.Data;
+                        Relation[index] = newAttribute;
+                    })
+                );
+        }
+
         public ICommand InsertAttribute
         {
             get => _insertAttribute ?? (
@@ -438,8 +476,8 @@ namespace Pickaxe.ViewModel
                         {
                             output.Clear();
                             algorithm.Run();
-                            // Add history
-                            var history = new AlgorithmHistoryViewModel
+                        // Add history
+                        var history = new AlgorithmHistoryViewModel
                             {
                                 Name = algorithm.Name,
                                 DateTime = DateTime.Now,
@@ -458,7 +496,7 @@ namespace Pickaxe.ViewModel
                                     break;
                                 default:
                                     break; // Do not add history
-                            }
+                        }
                         }
                     })
                 );
@@ -483,6 +521,39 @@ namespace Pickaxe.ViewModel
                 var data = new ObservableCollection<Value>();
                 data.Resize(Relation.TuplesView.Count, Value.MISSING);
                 return new RelationAttribute(dialog.ViewModel.Name, dialog.ViewModel.AttributeType, data);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        private RelationAttribute ShowDialogForReplaceAttribute(RelationAttribute attribute)
+        {
+            var dialog = new AttributeEditDialog();
+            dialog.ViewModel.Name = attribute.Name;
+            if (attribute.Type is AttributeType.Numeric)
+            {
+                dialog.ViewModel.AttributeType = dialog.ViewModel.NumericType;
+            }
+            else if (attribute.Type is AttributeType.Nominal nominal)
+            {
+                foreach (var label in nominal.NominalLabels)
+                {
+                    dialog.ViewModel.NominalType.NominalLabels.Add(label);
+                }
+                dialog.ViewModel.AttributeType = dialog.ViewModel.NominalType;
+            }
+            else if (attribute.Type is AttributeType.Binary binary)
+            {
+                dialog.ViewModel.BinaryType.TrueLabel = binary.TrueLabel;
+                dialog.ViewModel.BinaryType.FalseLabel = binary.FalseLabel;
+                dialog.ViewModel.AttributeType = dialog.ViewModel.BinaryType;
+            }
+            if (dialog.ShowDialog() == true)
+            {
+                return new RelationAttribute(dialog.ViewModel.Name, dialog.ViewModel.AttributeType,
+                    new ObservableCollection<Value>());
             }
             else
             {

@@ -23,7 +23,7 @@ namespace PickaxeAlgorithms.Cluster
             Options = new ObservableCollection<Option>
             {
                 new Option("Attributes", "Attributes take part in clustering", typeof(IEnumerable<RelationAttribute>), null),
-                new Option("Eps", "Neighbor distance threshold", typeof(float), 5),
+                new Option("Eps", "Neighbor distance threshold", typeof(float), 5.0f),
                 new Option("MinPts","Number of samples in Eps-region",typeof(int),5),
             };
         }
