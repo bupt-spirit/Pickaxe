@@ -215,7 +215,8 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <view:RelationEditGrid Grid.Row="0" Grid.Column="0"
-                        Relation="{Binding DataContext.Relation, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" />
+                                       x:Name="relationEditGrid"
+                                       Relation="{Binding DataContext.Relation, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" />
             </Grid>
         </TabItem>
         <TabItem Header="Classify">

@@ -31,6 +31,9 @@ namespace Pickaxe
         public MainWindow()
         {
             InitializeComponent();
+            relationEditGrid.ViewModel.AddAttribute = ViewModel.AddAttribute;
+            relationEditGrid.ViewModel.InsertAttribute = ViewModel.InsertAttribute;
+            relationEditGrid.ViewModel.RemoveAttribute = ViewModel.RemoveAttribute;
         }
 
         private void AttributeDataGrid_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
