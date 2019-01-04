@@ -81,6 +81,7 @@
                     </DataGrid>
                     <WrapPanel Grid.Row="1" Grid.Column="0">
                         <Button Content="Add" Command="{Binding AddAttribute}" />
+                        <Button Content="Replace" Command="{Binding ReplaceAttribute}" CommandParameter="{Binding SelectedIndex, ElementName=attributeDataGrid}" />
                         <Button Content="Insert" Command="{Binding InsertAttribute}" CommandParameter="{Binding SelectedIndex, ElementName=attributeDataGrid}" />
                         <Button Content="Remove" Command="{Binding RemoveAttribute}" CommandParameter="{Binding SelectedIndex, ElementName=attributeDataGrid}" />
                     </WrapPanel>
@@ -214,7 +215,8 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <view:RelationEditGrid Grid.Row="0" Grid.Column="0"
-                        Relation="{Binding DataContext.Relation, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" />
+                                       x:Name="relationEditGrid"
+                                       Relation="{Binding DataContext.Relation, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" />
             </Grid>
         </TabItem>
         <TabItem Header="Classify">

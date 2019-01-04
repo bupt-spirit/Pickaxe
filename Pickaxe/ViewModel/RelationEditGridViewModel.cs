@@ -13,9 +13,9 @@ namespace Pickaxe.ViewModel
     {
         private Relation _relation;
 
-        //private ICommand _addAttribute;
-        //private ICommand _insertAttribute;
-        //private ICommand _removeAttribute;
+        private ICommand _addAttribute;
+        private ICommand _insertAttribute;
+        private ICommand _removeAttribute;
 
         private ICommand _addTuple;
         private ICommand _insertTuple;
@@ -31,66 +31,33 @@ namespace Pickaxe.ViewModel
             }
         }
 
-        //public ICommand AddAttribute
-        //{
-        //    get => _addAttribute ?? (
-        //        _addAttribute = new RelayCommand(
-        //            parameter =>
-        //            {
-        //                return Relation != null;
-        //            },
-        //            parameter =>
-        //            {
-        //                var data = new ObservableCollection<Value>();
-        //                data.Resize(Relation.TuplesView.Count, Value.MISSING);
-        //                Relation.Add(
-        //                    new RelationAttribute("New Attribute", new AttributeType.Numeric(), data)
-        //                    );
-        //            })
-        //        );
-        //}
+        public ICommand AddAttribute
+        {
+            get => _addAttribute;
+            set {
+                _addAttribute = value;
+                OnPropertyChanged("AddAttribute");
+            }
+        }
 
-        //public ICommand InsertAttribute
-        //{
-        //    get => _insertAttribute ?? (
-        //        _insertAttribute = new RelayCommand(
-        //            parameter =>
-        //            {
-        //                if (Relation == null)
-        //                    return false;
-        //                if (parameter == null)
-        //                    return false;
-        //                return (int)parameter <= Relation.Count;
-        //            },
-        //            parameter =>
-        //            {
-        //                var data = new ObservableCollection<Value>();
-        //                data.Resize(Relation.TuplesView.Count, Value.MISSING);
-        //                Relation.Insert((int)parameter,
-        //                    new RelationAttribute("New Attribute", new AttributeType.Numeric(), data)
-        //                    );
-        //            })
-        //        );
-        //}
-
-        //public ICommand RemoveAttribute
-        //{
-        //    get => _removeAttribute ?? (
-        //        _removeAttribute = new RelayCommand(
-        //            parameter =>
-        //            {
-        //                if (Relation == null)
-        //                    return false;
-        //                if (parameter == null)
-        //                    return false;
-        //                return (int)parameter < Relation.Count;
-        //            },
-        //            parameter =>
-        //            {
-        //                Relation.RemoveAt((int)parameter);
-        //            })
-        //        );
-        //}
+        public ICommand InsertAttribute
+        {
+            get => _insertAttribute;
+            set
+            {
+                _insertAttribute = value;
+                OnPropertyChanged("InsertAttribute");
+            }
+        }
+        public ICommand RemoveAttribute
+        {
+            get => _removeAttribute;
+            set
+            {
+                _removeAttribute = value;
+                OnPropertyChanged("RemoveAttribute");
+            }
+        }
 
         public ICommand AddTuple
         {

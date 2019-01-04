@@ -26,6 +26,13 @@ namespace Pickaxe.View
         public AttributeEditDialog()
         {
             InitializeComponent();
+            ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+        }
+
+        private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "AttributeType")
+                OnAttributeTypeChanged();
         }
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -100,7 +107,19 @@ namespace Pickaxe.View
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            comboBox.SelectedItem = defaultComboBoxItem;
+            OnAttributeTypeChanged();
+        }
+
+        private void OnAttributeTypeChanged()
+        {
+            if (ViewModel.AttributeType is AttributeType.Numeric)
+                comboBox.SelectedItem = numericComboBoxItem;
+            else if (ViewModel.AttributeType is AttributeType.Nominal)
+                comboBox.SelectedItem = nominalComboBoxItem;
+            else if (ViewModel.AttributeType is AttributeType.Binary)
+                comboBox.SelectedItem = binaryComboBoxItem;
+            else
+                comboBox.SelectedItem = numericComboBoxItem;
         }
     }
 }

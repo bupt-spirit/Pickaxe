@@ -18,7 +18,7 @@ namespace Pickaxe.View
     /// </summary>
     public partial class RelationEditGrid : UserControl
     {
-        protected RelationEditGridViewModel ViewModel
+        public RelationEditGridViewModel ViewModel
         {
             get => (RelationEditGridViewModel)DataContext;
         }
@@ -85,6 +85,19 @@ namespace Pickaxe.View
                 c.CellTemplate = this.ColumnCellDataTemplate(relationAttribute.Type, i);
                 c.CellEditingTemplate = this.ColumnCellEditingDataTemplate(relationAttribute.Type, i);
             }
+        }
+
+
+        private void ReplaceColumn(int attributeIndex, RelationAttribute attribute)
+        {
+            DataGridColumn column = new DataGridTemplateColumn
+            {
+                CellTemplate = this.ColumnCellDataTemplate(attribute.Type, attributeIndex),
+                CellEditingTemplate = this.ColumnCellEditingDataTemplate(attribute.Type, attributeIndex),
+            };
+            column.Header = attribute;
+            column.HeaderTemplate = (DataTemplate)this.FindResource("ColumnHeaderTemplate");
+            this.dataGrid.Columns[attributeIndex] = column;
         }
 
         private void RemoveColumn(int attributeIndex)
@@ -217,6 +230,12 @@ namespace Pickaxe.View
                     break;
                 case NotifyCollectionChangedAction.Reset:
                     ClearColumn();
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    {
+                        var index = e.NewStartingIndex;
+                        ReplaceColumn(index, ViewModel.Relation[index]);
+                    }
                     break;
                 default:
                     throw new NotImplementedException();
