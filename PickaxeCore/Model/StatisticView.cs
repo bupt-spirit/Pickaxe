@@ -153,6 +153,7 @@ namespace Pickaxe.Model
             Min = Value.MISSING;
             Max = Value.MISSING;
             Missing = 0;
+            NotMissing = 0;
             Average = 0;
             DistinctValues.Clear();
         }
