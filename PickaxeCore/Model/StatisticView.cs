@@ -11,9 +11,11 @@ namespace Pickaxe.Model
 
         private RelationAttribute _relationAttribute;
         private int _missing;
+        private int _notMissing;
         private Dictionary<Value, int> _distinctValues;
         private Value _min;
         private Value _max;
+        private Value _average;
 
         #endregion
 
@@ -36,6 +38,16 @@ namespace Pickaxe.Model
             {
                 _missing = value;
                 OnPropertyChanged("Missing");
+            }
+        }
+
+        public int NotMissing
+        {
+            get => _notMissing;
+            private set
+            {
+                _notMissing = value;
+                OnPropertyChanged("NotMissing");
             }
         }
 
@@ -68,6 +80,16 @@ namespace Pickaxe.Model
             }
         }
 
+        public Value Average
+        {
+            get => _average;
+            private set
+            {
+                _average = value;
+                OnPropertyChanged("Average");
+            }
+        }
+
         #endregion
 
         #region Constructors
@@ -96,6 +118,8 @@ namespace Pickaxe.Model
             // handle missing value
             if (item.IsMissing())
                 Missing += 1;
+            else
+                NotMissing += 1;
             // handle distinct value
             if (!item.IsMissing())
             {
@@ -115,6 +139,13 @@ namespace Pickaxe.Model
                         Min = item;
                 }
             }
+            // handle average
+            if (!item.IsMissing())
+            {
+                // NotMissing has updated
+                // NotMissing != 0
+                Average = (Average * (NotMissing - 1) + item) / NotMissing;
+            }
         }
 
         public void Reset()
@@ -122,6 +153,7 @@ namespace Pickaxe.Model
             Min = Value.MISSING;
             Max = Value.MISSING;
             Missing = 0;
+            Average = 0;
             DistinctValues.Clear();
         }
 

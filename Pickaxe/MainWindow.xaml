@@ -125,6 +125,13 @@
                                                           FallbackValue={StaticResource FallbackString}}" />
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
+                                <Label Content="Valid Count:" />
+                                <TextBlock VerticalAlignment="Center"
+                                           Text="{Binding SelectedItem.StatisticView.NotMissing,
+                                                          ElementName=attributeDataGrid,
+                                                          FallbackValue={StaticResource FallbackString}}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
                                 <Label Content="Min:" />
                                 <TextBlock VerticalAlignment="Center"
                                            Text="{Binding SelectedItem.StatisticView.Min,
@@ -135,6 +142,13 @@
                                 <Label Content="Max:" />
                                 <TextBlock VerticalAlignment="Center"
                                            Text="{Binding SelectedItem.StatisticView.Max,
+                                                          ElementName=attributeDataGrid,
+                                                          FallbackValue={StaticResource FallbackString}}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="Average:" />
+                                <TextBlock VerticalAlignment="Center"
+                                           Text="{Binding SelectedItem.StatisticView.Average,
                                                           ElementName=attributeDataGrid,
                                                           FallbackValue={StaticResource FallbackString}}" />
                             </StackPanel>
