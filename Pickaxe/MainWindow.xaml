@@ -41,6 +41,7 @@
                         <Button VerticalAlignment="Center" Content="Save" Command="{Binding SaveRelation}" />
                         <Button VerticalAlignment="Center" Content="Save As" Command="{Binding SaveAsRelation}" />
                         <Button VerticalAlignment="Center" Content="Load From CSV" Command="{Binding LoadRelationFromCSV}" />
+                        <Button VerticalAlignment="Center" Content="Load From Serialized" Command="{Binding LoadRelationFromSerialized}" />
                         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
                             <StackPanel Orientation="Horizontal">
                                 <Label VerticalAlignment="Center" Content="Current File:"

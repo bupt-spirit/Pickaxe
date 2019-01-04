@@ -33,6 +33,7 @@ namespace Pickaxe.ViewModel
         private ICommand _saveAsRelation;
 
         private ICommand _loadRelationFromCSV;
+        private ICommand _loadRelationFromSerialized;
 
         private ICommand _addAttribute;
         private ICommand _replaceAttribute;
@@ -292,6 +293,36 @@ namespace Pickaxe.ViewModel
                 ));
         }
 
+        public ICommand LoadRelationFromSerialized
+        {
+            get => _loadRelationFromSerialized ?? (_loadRelationFromSerialized = new RelayCommand(
+                    parameter => true,
+                    parameter =>
+                    {
+                        var openFileDialog = new OpenFileDialog
+                        {
+                            Filter = CSVFileFilter
+                        };
+                        if (openFileDialog.ShowDialog() == true)
+                        {
+                            using (var stream = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read))
+                            {
+                                try
+                                {
+                                    Relation = BinaryFormatter.Deserialize(stream);
+                                }
+                                catch (Exception)
+                                {
+                                    MessageBox.Show("Selected file is corrupted, please select another file",
+                                        "Invalid CSV file");
+                                }
+                            }
+                        }
+                        // Do nothing
+                    }
+                ));
+        }
+
         public ICommand AddAttribute
         {
             get => _addAttribute ?? (
@@ -510,6 +541,7 @@ namespace Pickaxe.ViewModel
         private const string FileFilter = "Pickaxe files (*.pickaxe)|*.pickaxe|All files (*.*)|*.*";
         private const string CSVFileFilter = "CSV files (*.csv)|*.csv|All files (*.*)|*.*";
         private static readonly IRelationFormatter Formatter = new RelationFormatter();
+        private static readonly IRelationFormatter BinaryFormatter = new BinaryRelationFormatter();
         private static readonly IRelationFormatter CSVFormatter = new CSVRelationFormatter();
 
         #endregion
