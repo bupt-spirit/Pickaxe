@@ -48,6 +48,7 @@
             <ColumnDefinition Width="*" MaxWidth="300" />
         </Grid.ColumnDefinitions>
         <TextBlock Grid.Row="0" Grid.Column="0"
+                   Margin="10"
                    Text="{Binding Description}" 
                    TextWrapping="Wrap" />
         <Grid Grid.Row="1" Grid.Column="0"

@@ -79,6 +79,8 @@ namespace Pickaxe
 
                 var input = CreateInputComponent(option);
                 input.ToolTip = option.Description;
+                input.MaxHeight = 100;
+                input.Margin = new Thickness(5);
                 Grid.SetRow(input, row);
                 Grid.SetColumn(input, 1);
                 optionGrid.Children.Add(input);
