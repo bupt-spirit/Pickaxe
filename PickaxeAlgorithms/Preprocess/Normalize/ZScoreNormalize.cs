@@ -40,7 +40,10 @@ namespace Pickaxe.Algorithms.Preprocess.Normalize
         {
             // Z-Score Normalize
             if (!(attribute.Type is AttributeType.Numeric))
+            {
+                WriteOutputLine($"Error:Only numeric type is allowed!");
                 return;
+            }
             Value sum = 0;
             float miu, sigma;
             var temp = attribute.Data.Where((x) => !x.IsMissing()).ToList();
