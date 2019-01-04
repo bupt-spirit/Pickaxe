@@ -35,6 +35,19 @@ namespace PickaxeAlgorithms.Classify
             var attriCount = attributes.Count;
             var attriNames = new string[attriCount + 1];
             var data = new string[tupleCount, attriCount + 1];
+            foreach (var attribute in attributes)
+            {
+                if (!(attribute.Type is AttributeType.Nominal))
+                {
+                    WriteOutput($"Error:Only Nominal type is allowed!!");
+                    return;
+                }
+            }
+            if (!(label.Type is AttributeType.Nominal))
+            {
+                WriteOutput($"Error:Only Nominal type is allowed!!");
+                return;
+            }
             var NominalLabels = ((AttributeType.Nominal)label.Type).NominalLabels;
             for (int j = 0; j < tupleCount; j++)
             {
