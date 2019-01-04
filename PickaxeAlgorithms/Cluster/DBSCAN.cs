@@ -10,20 +10,20 @@ using System.Threading.Tasks;
 
 namespace PickaxeAlgorithms.Cluster
 {
-    class DBSCAN : AlgorithmBase
+    class Dbscan : AlgorithmBase
     {
         public override AlgorithmType Type => AlgorithmType.Cluster;
 
-        public override string Name => "DBSCAN Cluster";
+        public override string Name => "DBSCAN";
 
         public override string Description => "DBSCAN Cluster is a cluster stategy based on density.";
 
-        public DBSCAN()
+        public Dbscan()
         {
             Options = new ObservableCollection<Option>
             {
                 new Option("Attributes", "Attributes take part in clustering", typeof(IEnumerable<RelationAttribute>), null),
-                new Option("Eps", "Neighbor distance threshold", typeof(float), 5),
+                new Option("Eps", "Neighbor distance threshold", typeof(float), 5.0f),
                 new Option("MinPts","Number of samples in Eps-region",typeof(int),5),
             };
         }
@@ -58,53 +58,60 @@ namespace PickaxeAlgorithms.Cluster
             List<string> clusterResult = new List<string>();
             for (int i = 0; i < tupleCount; i++)
             {
-                clusterResult.Add("UNCLASSIFIED");
+                //UNCLASSIFIED -2
+                clusterResult.Add("1000");
             }
             for (int pointId = 0; pointId < tupleCount; pointId++)
             {
                 List<string> points = new List<string>();
                 //string[] points = new string[pointId + 1];
-               for(int i = 0; i < pointId; i++)
+               for(int i = 0; i <= pointId; i++)
                 {
                     points.Add(clusterResult[i]);
                 }
                 //points = clusterResult.Take(pointId + 1);
-                if (clusterResult[pointId] == "UNCLASSIFIED")
+                if (clusterResult[pointId] == "1000")
                 {
-                    if (expandCluster(attributes, clusterResult.ToArray(), pointId, clusterId, eps, MinPts))
+                    
+                    if (expandCluster(attributes, ref clusterResult, pointId, clusterId, eps, MinPts))
                     {
+                        
                         clusterId++;
                     }
                 }
             }
+
             clusterId--;
             WriteOutputLine($"Finished DBSCAN clustering,number of class: {clusterId}");
-
-            //生成新属性，保存分类结果
+            
+            //新属性，保存分类结果
             var data = new ObservableCollection<Value>();
             data.Resize(tupleCount, Value.MISSING);
             var nominalType = new AttributeType.Nominal();
+            nominalType.NominalLabels.Add($"Noise");
             for (int i = 0; i < clusterId; ++i)
             {
                 nominalType.NominalLabels.Add($"Class{i}");
             }
+            
             var result = new RelationAttribute("DBSCAN_result", nominalType, data);
 
             for (int i=0;i< clusterResult.Count; i++)
-            {
+            {               
                 result.Data[i] = int.Parse(clusterResult[i]);
             }
             Relation.Add(result);
         }
 
         //能否成功分类
-        bool expandCluster(List<RelationAttribute> attributes, string[] clusterResult, int pointId, int clusterId, float eps, int minPts)
+        bool expandCluster(List<RelationAttribute> attributes, ref List<string> cr, int pointId, int clusterId, float eps, int minPts)
         {
+            string[] clusterResult = cr.ToArray();
             List<int> seeds = regionQuery(attributes, pointId, eps);
             //不满足minPts条件的为噪声点
             if (seeds.Count < minPts)
             {
-                clusterResult[pointId] = "NOISE";
+                clusterResult[pointId] = (0).ToString();
                 return false;
             }
             else
@@ -127,19 +134,22 @@ namespace PickaxeAlgorithms.Cluster
                         for (int i = 0; i < queryResults.Count; i++)
                         {
                             int resultPoint = queryResults[i];
-                            if (clusterResult[resultPoint] == "UNCLASSIFIED")
+                            if (clusterResult[resultPoint] == "1000")
                             {
                                 seeds.Add(resultPoint);
                                 clusterResult[resultPoint] = clusterId.ToString();
                             }
-                            else if (clusterResult[resultPoint] == "NOISE")
+                            //noise
+                            else if (clusterResult[resultPoint] == "0")
                                 clusterResult[resultPoint] = clusterId.ToString();
                         }
                     }
                     seeds.RemoveAt(0);
                 }
+                cr=clusterResult.ToList();
                 return true;
             }
+
         }
 
         //输出在eps范围内的点的id

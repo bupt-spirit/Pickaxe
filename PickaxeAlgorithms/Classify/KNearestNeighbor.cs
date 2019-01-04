@@ -8,18 +8,17 @@ using System.Threading.Tasks;
 
 namespace PickaxeAlgorithms.Preprocess.Classify
 {
-    class KNN : AlgorithmBase
+    class KNearestNeighbor : AlgorithmBase
     {
         public override AlgorithmType Type => AlgorithmType.Classify;
-        public override string Name => "K-nearest neighbors algorithm(KNN)";
+        public override string Name => "KNN";
         public override string Description => "KNN is to classify values into k classes.";
 
-        public KNN()
+        public KNearestNeighbor()
         {
             Options = new System.Collections.ObjectModel.ObservableCollection<Option>
             {
                 new Option("Attributes", "Attributes to be classified", typeof(IEnumerable<RelationAttribute>), null),
-                //new Option("Label ")
                 new Option("K Number", "Class number", typeof(int), 3),
             };
         }
