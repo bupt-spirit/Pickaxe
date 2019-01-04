@@ -53,6 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Associate\Apriori.cs" />
     <Compile Include="Associate\PearsonAssociate.cs" />
     <Compile Include="Associate\SkewnessPeakedness.cs" />
     <Compile Include="Cluster\DBSCAN.cs" />
