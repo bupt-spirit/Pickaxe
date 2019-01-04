@@ -280,6 +280,7 @@ namespace Pickaxe.ViewModel
                                 try
                                 {
                                     Relation = CSVFormatter.Deserialize(stream);
+                                    FileName = null;
                                 }
                                 catch (Exception)
                                 {
@@ -301,7 +302,7 @@ namespace Pickaxe.ViewModel
                     {
                         var openFileDialog = new OpenFileDialog
                         {
-                            Filter = CSVFileFilter
+                            Filter = FileFilter
                         };
                         if (openFileDialog.ShowDialog() == true)
                         {
@@ -310,11 +311,12 @@ namespace Pickaxe.ViewModel
                                 try
                                 {
                                     Relation = BinaryFormatter.Deserialize(stream);
+                                    FileName = null;
                                 }
                                 catch (Exception)
                                 {
                                     MessageBox.Show("Selected file is corrupted, please select another file",
-                                        "Invalid CSV file");
+                                        "Invalid Pickaxe Serialized file");
                                 }
                             }
                         }
