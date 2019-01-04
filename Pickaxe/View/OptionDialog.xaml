@@ -9,7 +9,6 @@
         xmlns:validation="clr-namespace:Pickaxe.Utility.ValidationRules"
         mc:Ignorable="d"
         SizeToContent="WidthAndHeight"
-        ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner"
         Title="{Binding Name}"
         DataContextChanged="Window_DataContextChanged">

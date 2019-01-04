@@ -10,7 +10,6 @@
         mc:Ignorable="d"
         Title="Edit Attribute"
         SizeToContent="WidthAndHeight"
-        ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner"
         Loaded="Window_Loaded">
     <Window.DataContext>
