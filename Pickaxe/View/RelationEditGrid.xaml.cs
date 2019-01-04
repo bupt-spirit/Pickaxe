@@ -18,7 +18,7 @@ namespace Pickaxe.View
     /// </summary>
     public partial class RelationEditGrid : UserControl
     {
-        protected RelationEditGridViewModel ViewModel
+        public RelationEditGridViewModel ViewModel
         {
             get => (RelationEditGridViewModel)DataContext;
         }
